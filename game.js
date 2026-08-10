@@ -208,7 +208,14 @@
   function guess(letter) {
     if (state.status !== "playing") return;
     if (!ALPHABET.has(letter)) return;
-    if (state.guessed.has(letter)) return;
+    if (state.guessed.has(letter)) {
+      if (state.absent.has(letter)) {
+        flashMessage("'" + letter + "' harfi zaten denendi.");
+      } else {
+        flashMessage("'" + letter + "' harfi zaten bulunuyor.");
+      }
+      return;
+    }
 
     state.guessed.add(letter);
     const present = state.words.some((w) => w.includes(letter));
@@ -233,7 +240,7 @@
       const w = pickNextWord();
       if (w) state.words.push(w);
       render();
-      flashMessage(trLower(letter) + " harfi bulunmuyor - yeni kelime eklendi.");
+      flashMessage("'" + letter + "' harfi bulunmuyor - yeni kelime eklendi.");
     }
     saveGame();
   }
