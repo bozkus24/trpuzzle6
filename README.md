@@ -39,9 +39,10 @@ klavyeden harfleri tahmin et.
 
 ## Kelime listesi kaynağı
 
-Kelimeler **TDK Güncel Türkçe Sözlük (12. baskı)** verisinden derlenmiştir.
-Kaynak veri: [ogun/guncel-turkce-sozluk](https://github.com/ogun/guncel-turkce-sozluk)
-(`v12.gts.json`). 99.236 sözlük maddesi taranmış; **özel isimler** (`ozel_mi`)
-hariç tutulmuş, yalnızca tek kelimelik 5 harfli maddeler alınmış, şapkalı
-harfler (Â, Î, Û) temel Türkçe harflere normalize edilip tekrarlar
-temizlenmiştir. Sonuç: **5.456 kelime**.
+Kelimeler doğrudan repodaki **`kelimehavuzu.txt`** dosyasından alınır (5.585
+adet 5 harfli Türkçe kelime). Herhangi bir dış doğrulama yapılmaz; dosyadaki
+kelimeler Türkçe kurallara göre büyük harfe çevrilerek (`i→İ`, `ı→I`)
+`words.js` üretilir.
+
+Kelime havuzunu güncellemek için `kelimehavuzu.txt` dosyasını düzenleyip
+`words.js`'i yeniden üretmen yeterli.
