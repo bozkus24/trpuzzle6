@@ -18,6 +18,30 @@
   ];
   const ALPHABET = new Set("ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split(""));
 
+  // ---- İkonlar (emoji yerine satır içi SVG) ----
+  const ICONS = {
+    fox:
+      '<svg class="ttl-ico" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">' +
+      '<path d="M32 54 L9 21 L19 11 L28 22 Q32 24 36 22 L45 11 L55 21 Z" fill="#e8862a"/>' +
+      '<path d="M19 11 L24 19 L28 22 L21.5 20 Z" fill="#cf7015"/>' +
+      '<path d="M45 11 L40 19 L36 22 L42.5 20 Z" fill="#cf7015"/>' +
+      '<path d="M32 54 L21 37 Q32 41 43 37 Z" fill="#ffffff"/>' +
+      '<circle cx="24" cy="29" r="2.7" fill="#2b2320"/>' +
+      '<circle cx="40" cy="29" r="2.7" fill="#2b2320"/>' +
+      '<circle cx="32" cy="43" r="2.5" fill="#2b2320"/></svg>',
+    moon:
+      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
+      '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z" fill="currentColor"/></svg>',
+    sun:
+      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
+      '<circle cx="12" cy="12" r="4.2" fill="currentColor"/>' +
+      '<g stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+      '<line x1="12" y1="1.8" x2="12" y2="4.4"/><line x1="12" y1="19.6" x2="12" y2="22.2"/>' +
+      '<line x1="1.8" y1="12" x2="4.4" y2="12"/><line x1="19.6" y1="12" x2="22.2" y2="12"/>' +
+      '<line x1="4.6" y1="4.6" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19.4" y2="19.4"/>' +
+      '<line x1="4.6" y1="19.4" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19.4" y2="4.6"/></g></svg>',
+  };
+
   // ---- Yardımcılar ----
   const $ = (sel) => document.querySelector(sel);
   const trUpper = (ch) => ch.toLocaleUpperCase("tr-TR");
@@ -392,7 +416,7 @@
 
   function showEndModal(won) {
     const s = getStats(state.mode);
-    $("#end-title").textContent = won ? "Kazandın! 🦊🎉" : "Oyun bitti 😿";
+    $("#end-title").innerHTML = won ? ICONS.fox + " Kazandın!" : "Oyun bitti";
     $("#end-sub").textContent = won
       ? `Aferin! ${state.words.length} kelime ve ${state.guessed.size} harf kullandın.`
       : `Tüm canlar bitti. ${state.words.length} kelime açıldı.`;
@@ -414,13 +438,13 @@
   // ---- Paylaşım ----
   function buildShareText() {
     const title = state.mode === "daily" ? `FoxiMax #${state.puzzleNo}` : "FoxiMax (Antrenman)";
-    const result = state.status === "won" ? "çözüldü ✓" : "kaybedildi ✗";
+    const result = state.status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - state.wrong;
-    for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "🟧" : "⬛";
+    for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "■" : "□";
     return (
-      `🦊 ${title} — ${result}\n` +
-      `🧩 ${state.words.length} kelime · ❌ ${state.wrong}/${MAX_WRONG} yanlış\n` +
+      `${title} — ${result}\n` +
+      `${state.words.length} kelime · ${state.wrong}/${MAX_WRONG} yanlış\n` +
       `${bar}`
     );
   }
@@ -470,7 +494,7 @@
   function applyTheme(theme) {
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
-    $("#theme-btn").textContent = theme === "dark" ? "☀️" : "🌙";
+    $("#theme-btn").innerHTML = theme === "dark" ? ICONS.sun : ICONS.moon;
   }
   function toggleTheme() {
     const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
