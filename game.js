@@ -21,6 +21,7 @@
   // ---- Yardımcılar ----
   const $ = (sel) => document.querySelector(sel);
   const trUpper = (ch) => ch.toLocaleUpperCase("tr-TR");
+  const trLower = (ch) => ch.toLocaleLowerCase("tr-TR");
 
   // Deterministik PRNG (mulberry32)
   function mulberry32(seed) {
@@ -222,7 +223,7 @@
       const w = pickNextWord();
       if (w) state.words.push(w);
       render();
-      flashMessage("Yeni kelime eklendi! 🦊");
+      flashMessage(trLower(letter) + " harfi bulunmuyor - yeni kelime ekleniyor");
     }
     saveGame();
   }
