@@ -114,28 +114,38 @@
     } catch (e) { return null; }
   }
 
-  // ---- İstatistik ----
-  function getStats() {
-    const def = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, lastWinNo: null };
-    return Object.assign(def, loadSaved("foximax-stats") || {});
+  // ---- İstatistik (mod bazlı: günlük / antrenman ayrı) ----
+  function statsKey(mode) {
+    return mode === "daily" ? "foximax-stats" : "foximax-stats-practice";
   }
-  function saveStats(s) {
-    try { localStorage.setItem("foximax-stats", JSON.stringify(s)); } catch (e) {}
+  function getStats(mode) {
+    const def = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, lastWinNo: null, dist: {} };
+    const s = Object.assign(def, loadSaved(statsKey(mode)) || {});
+    if (!s.dist) s.dist = {};
+    return s;
   }
-  function recordDailyResult(won) {
-    const s = getStats();
+  function saveStats(mode, s) {
+    try { localStorage.setItem(statsKey(mode), JSON.stringify(s)); } catch (e) {}
+  }
+  function recordResult(mode, won, wordCount) {
+    const s = getStats(mode);
     s.played += 1;
     if (won) {
       s.wins += 1;
-      // seri: bir önceki gün kazanılmışsa uzat
-      if (s.lastWinNo === state.puzzleNo - 1) s.currentStreak += 1;
-      else s.currentStreak = 1;
-      s.lastWinNo = state.puzzleNo;
+      if (mode === "daily") {
+        // seri: bir önceki gün kazanılmışsa uzat
+        if (s.lastWinNo === state.puzzleNo - 1) s.currentStreak += 1;
+        else s.currentStreak = 1;
+        s.lastWinNo = state.puzzleNo;
+      } else {
+        s.currentStreak += 1;
+      }
       if (s.currentStreak > s.maxStreak) s.maxStreak = s.currentStreak;
+      s.dist[wordCount] = (s.dist[wordCount] || 0) + 1;
     } else {
       s.currentStreak = 0;
     }
-    saveStats(s);
+    saveStats(mode, s);
   }
 
   // ---- Oyun kurulumu ----
@@ -231,7 +241,7 @@
   function finishGame(won) {
     render();
     saveGame();
-    if (state.mode === "daily") recordDailyResult(won);
+    recordResult(state.mode, won, state.words.length);
     setTimeout(() => showEndModal(won), 650);
   }
 
@@ -316,45 +326,60 @@
   function openModal(id) { $(id).hidden = false; }
   function closeModal(el) { el.hidden = true; }
 
-  function showStats() {
-    const s = getStats();
+  function statsSummaryHTML(mode, s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
-    $("#stats-grid").innerHTML = statBoxes([
-      [s.played, "Oynanan"],
-      [winPct + "%", "Kazanma"],
-      [s.currentStreak, "Güncel seri"],
-      [s.maxStreak, "En uzun seri"],
-    ]);
+    const label = mode === "daily" ? "Günlük" : "Antrenman";
+    return (
+      '<div class="stats-lines">' +
+      `<div class="stats-mode">${label} İstatistikleri</div>` +
+      `<p>Oynanan: <b>${s.played}</b> oyun · Kazanma: <b>%${winPct}</b></p>` +
+      `<p>Güncel seri: <b>${s.currentStreak}</b> · En iyi seri: <b>${s.maxStreak}</b></p>` +
+      "</div>"
+    );
+  }
+
+  // Galibiyet kaydı: kaç kelimeyle kazanıldığının dağılımı (1..8)
+  function winRecordHTML(s, highlight) {
+    const dist = s.dist || {};
+    let max = 1;
+    for (let k = 1; k <= MAX_WRONG; k++) max = Math.max(max, dist[k] || 0);
+    let rows = "";
+    for (let k = 1; k <= MAX_WRONG; k++) {
+      const c = dist[k] || 0;
+      const w = Math.max(9, Math.round((c / max) * 100));
+      const cur = highlight === k ? " current" : "";
+      rows +=
+        `<div class="wr-row"><div class="wr-idx">${k}</div>` +
+        `<div class="wr-bar-wrap"><div class="wr-bar${cur}" style="width:${w}%">${c}</div></div></div>`;
+    }
+    return (
+      '<div class="win-record"><div class="wr-title">Galibiyet Kaydı — kelime sayısı</div>' +
+      `<div class="wr-rows">${rows}</div></div>`
+    );
+  }
+
+  function showStats() {
+    const s = getStats(state.mode);
+    $("#stats-body").innerHTML =
+      statsSummaryHTML(state.mode, s) + winRecordHTML(s, null);
     openModal("#stats-modal");
   }
 
-  function statBoxes(pairs) {
-    return pairs.map(([n, l]) =>
-      `<div class="stat-box"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`
-    ).join("");
-  }
-
   function showEndModal(won) {
+    const s = getStats(state.mode);
     $("#end-title").textContent = won ? "Kazandın! 🦊🎉" : "Oyun bitti 😿";
     $("#end-sub").textContent = won
-      ? `${state.words.length} kelimeyi ${state.wrong} yanlışla çözdün.`
+      ? `Aferin! ${state.words.length} kelime ve ${state.guessed.size} harf kullandın.`
       : `Tüm canlar bitti. ${state.words.length} kelime açıldı.`;
 
+    $("#end-stats").innerHTML =
+      statsSummaryHTML(state.mode, s) +
+      winRecordHTML(s, won ? state.words.length : null);
+
     if (state.mode === "daily") {
-      const s = getStats();
-      $("#end-stats").innerHTML = statBoxes([
-        [s.currentStreak, "Güncel seri"],
-        [s.maxStreak, "En uzun seri"],
-        [s.wins, "Toplam galibiyet"],
-      ]);
       $("#practice-again-btn").hidden = true;
       startCountdown();
     } else {
-      $("#end-stats").innerHTML = statBoxes([
-        [state.words.length, "Kelime"],
-        [state.wrong, "Yanlış"],
-        [MAX_WRONG - state.wrong, "Kalan can"],
-      ]);
       $("#practice-again-btn").hidden = false;
       $("#countdown").textContent = "";
     }
