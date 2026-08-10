@@ -233,7 +233,7 @@
       const w = pickNextWord();
       if (w) state.words.push(w);
       render();
-      flashMessage(trLower(letter) + " harfi bulunmuyor - yeni kelime ekleniyor");
+      flashMessage(trLower(letter) + " harfi bulunmuyor - yeni kelime eklendi.");
     }
     saveGame();
   }
