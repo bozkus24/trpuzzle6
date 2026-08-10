@@ -227,6 +227,7 @@
         finishGame(true);
         return;
       }
+      flashMessage("'" + letter + "' harfini buldun!");
     } else {
       state.absent.add(letter);
       state.wrong += 1;
