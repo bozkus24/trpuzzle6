@@ -68,17 +68,22 @@
   };
 
   // ---- Kelime seçimi ----
+  // Not: Yeni kelimeler önceden denenmiş (çıkmamış) harfleri içerebilir; bunlar
+  // ızgarada doğrudan gri olarak gösterilir. Yalnızca yinelenen ya da tamamen
+  // önceden tahmin edilmiş (eklenir eklenmez çözülmüş olacak) kelimeler atlanır.
   function pickNextWord() {
     const N = WORDS.length;
     for (let scanned = 0; scanned < N; scanned++) {
       const idx = state.order[state.ptr % N];
       state.ptr++;
       const w = WORDS[idx];
-      let ok = true;
+      if (state.words.includes(w)) continue;
+      let allGuessed = true;
       for (const ch of w) {
-        if (state.absent.has(ch)) { ok = false; break; }
+        if (!state.guessed.has(ch)) { allGuessed = false; break; }
       }
-      if (ok && !state.words.includes(w)) return w;
+      if (allGuessed) continue;
+      return w;
     }
     return null; // teorik olarak ulaşılmaz
   }
@@ -221,7 +226,7 @@
     const present = state.words.some((w) => w.includes(letter));
 
     if (present) {
-      render();
+      render({ flip: letter });
       if (allSolved()) {
         state.status = "won";
         finishGame(true);
@@ -237,10 +242,10 @@
         finishGame(false);
         return;
       }
-      // yeni kelime ekle
+      // yeni kelime ekle (önceden denenmiş harfleri gri içerebilir)
       const w = pickNextWord();
       if (w) state.words.push(w);
-      render();
+      render({ dropLast: !!w });
       flashMessage("'" + letter + "' harfi bulunmuyor - yeni kelime eklendi.");
     }
     saveGame();
@@ -254,7 +259,12 @@
   }
 
   // ---- Render ----
-  function render() {
+  // opts.flip  : yeni açılan harf (o harfe ait tile'lara flip animasyonu)
+  // opts.dropLast : true ise son (yeni eklenen) kelime satırı aşağı düşme animasyonuyla girer
+  function render(opts) {
+    opts = opts || {};
+    const flip = opts.flip || null;
+
     // canlar
     const remaining = MAX_WRONG - state.wrong;
     let hearts = "";
@@ -269,19 +279,26 @@
     // tahta
     const board = $("#board");
     board.innerHTML = "";
-    state.words.forEach((w) => {
+    const lastIndex = state.words.length - 1;
+    state.words.forEach((w, wi) => {
       const row = document.createElement("div");
-      row.className = "word-row";
+      row.className = "word-row" + (opts.dropLast && wi === lastIndex ? " drop" : "");
       const solved = isWordSolved(w);
       for (const ch of w) {
         const tile = document.createElement("div");
         const shown = state.guessed.has(ch);
-        tile.className = "tile" + (shown ? " revealed" : "") + (solved ? " solved-row" : "");
-        if (shown) tile.textContent = ch;
-        else if (state.status === "lost") {
+        let cls = "tile";
+        if (shown) {
+          const miss = state.absent.has(ch);
+          cls += miss ? " miss" : " revealed";
+          if (solved && !miss) cls += " solved-row";
+          if (flip && ch === flip && !miss) cls += " flip";
           tile.textContent = ch;
-          tile.style.background = "var(--absent)";
+        } else if (state.status === "lost") {
+          cls += " miss";
+          tile.textContent = ch;
         }
+        tile.className = cls;
         row.appendChild(tile);
       }
       board.appendChild(row);
