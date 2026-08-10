@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#e8862a" />
+  <title>FoxiMax — Günlük Kelime Bulmacası</title>
+  <meta name="description" content="FoxiMax: Türkçe günlük kelime bulmacası. Harfleri tahmin et, gizli kelimeleri çöz — ama her yanlış tahmin bulmacayı büyütür!" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="help-btn" aria-label="Nasıl oynanır">?</button>
+    <h1 class="brand"><span class="fox">🦊</span> FoxiMax</h1>
+    <div class="topbar-right">
+      <button class="icon-btn" id="stats-btn" aria-label="İstatistikler">📊</button>
+      <button class="icon-btn" id="theme-btn" aria-label="Tema">🌙</button>
+    </div>
+  </header>
+
+  <nav class="modes">
+    <button class="mode-tab active" data-mode="daily">Günlük</button>
+    <button class="mode-tab" data-mode="practice">Antrenman</button>
+  </nav>
+
+  <main class="game">
+    <div class="status-row">
+      <div class="lives" id="lives" aria-label="Kalan can">
+        <span class="lives-label">Canlar</span>
+        <span class="hearts" id="hearts"></span>
+      </div>
+      <div class="wordcount" id="wordcount">Kelime: 1</div>
+    </div>
+
+    <section class="board" id="board" aria-live="polite"></section>
+
+    <div class="message" id="message"></div>
+
+    <section class="keyboard" id="keyboard"></section>
+  </main>
+
+  <!-- Nasıl oynanır -->
+  <div class="modal-overlay" id="help-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Nasıl Oynanır 🦊</h2>
+      <p><strong>FoxiMax</strong>, klasik harf tahmin oyununa kurnaz bir kıvrım getirir.</p>
+      <ul>
+        <li>Gizli kelimeyi <strong>harfleri tek tek tahmin ederek</strong> çöz.</li>
+        <li>Tahmin ettiğin harf kelimede varsa, tüm yerlerinde <strong>açığa çıkar</strong>.</li>
+        <li>Ama harf <strong>yoksa</strong>, ızgaraya <strong>yeni bir kelime eklenir</strong> — ve artık hepsini aynı tahminlerle çözmen gerekir!</li>
+        <li><strong>8 yanlış</strong> harfte oyun biter.</li>
+        <li>Amaç: kelimeleri <strong>mümkün olan en az yanlışla</strong> çözmek.</li>
+      </ul>
+      <div class="legend">
+        <div><span class="key-demo correct">A</span> Kelimede var</div>
+        <div><span class="key-demo absent">B</span> Kelimede yok</div>
+      </div>
+      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serini uzat. <strong>Antrenman</strong> modunda rastgele oyna ve paylaş.</p>
+    </div>
+  </div>
+
+  <!-- İstatistikler -->
+  <div class="modal-overlay" id="stats-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>İstatistikler</h2>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div id="stats-share-area"></div>
+    </div>
+  </div>
+
+  <!-- Oyun sonu -->
+  <div class="modal-overlay" id="end-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2 id="end-title"></h2>
+      <p id="end-sub" class="muted"></p>
+      <div class="stats-grid" id="end-stats"></div>
+      <div class="end-actions">
+        <button class="primary-btn" id="share-btn">Sonucu Paylaş</button>
+        <button class="secondary-btn" id="practice-again-btn" hidden>Yeni Oyun</button>
+      </div>
+      <p id="countdown" class="muted countdown"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="words.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
