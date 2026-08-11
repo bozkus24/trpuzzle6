@@ -558,13 +558,19 @@
 
     bindEvents();
 
-    // ilk açılışta yardım göster (bir kez)
-    let seenHelp = false;
-    try { seenHelp = localStorage.getItem("foximax-seen-help") === "1"; } catch (e) {}
-    if (!seenHelp) {
-      openModal("#help-modal");
-      try { localStorage.setItem("foximax-seen-help", "1"); } catch (e) {}
+    // "Nasıl oynanır" penceresi: kullanıcı "bir daha gösterme" demediyse her açılışta gelir
+    let hideHelp = false;
+    try { hideHelp = localStorage.getItem("foximax-hide-help") === "1"; } catch (e) {}
+    const dontShow = $("#dont-show-help");
+    if (dontShow) {
+      dontShow.checked = hideHelp;
+      dontShow.addEventListener("change", () => {
+        try {
+          localStorage.setItem("foximax-hide-help", dontShow.checked ? "1" : "0");
+        } catch (e) {}
+      });
     }
+    if (!hideHelp) openModal("#help-modal");
 
     startGame("daily");
   }

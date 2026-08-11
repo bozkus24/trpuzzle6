@@ -296,6 +296,32 @@ body {
   align-items: center;
 }
 .legend > div { display: flex; align-items: center; gap: 8px; }
+
+/* Nasıl oynanır alt kısmı: "bir daha gösterme" + Anladım */
+.help-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.dont-show {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.dont-show input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--correct);
+  cursor: pointer;
+}
+.help-ok { flex: 0 0 auto; padding: 10px 20px; }
 .key-demo {
   width: 30px; height: 30px; border-radius: 6px;
   display: grid; place-items: center; font-weight: 800; color: #fff;
