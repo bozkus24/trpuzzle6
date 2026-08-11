@@ -300,13 +300,13 @@ body {
 /* Nasıl oynanır alt kısmı: "bir daha gösterme" + Anladım */
 .help-footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
   margin-top: 18px;
-  flex-wrap: wrap;
 }
 .dont-show {
+  align-self: flex-start;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -321,7 +321,7 @@ body {
   accent-color: var(--correct);
   cursor: pointer;
 }
-.help-ok { flex: 0 0 auto; padding: 10px 20px; }
+.help-ok { width: 100%; padding: 14px; }
 .key-demo {
   width: 30px; height: 30px; border-radius: 6px;
   display: grid; place-items: center; font-weight: 800; color: #fff;
