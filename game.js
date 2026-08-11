@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FoxiMax — Türkçe günlük kelime bulmacası
+   Tilkile — Türkçe günlük kelime bulmacası
    Mekanik: harfleri tek tek tahmin et. Harf kelimede varsa açığa çıkar;
    yoksa ızgaraya yeni bir kelime eklenir ve bir can gider. 8 yanlışta oyun biter.
    ========================================================================== */
@@ -428,7 +428,7 @@
 
   // ---- Paylaşım ----
   function buildShareText() {
-    const title = state.mode === "daily" ? `TilkiMaks #${state.puzzleNo}` : "TilkiMaks (Antrenman)";
+    const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Antrenman)";
     const result = state.status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - state.wrong;

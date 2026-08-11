@@ -89,7 +89,7 @@ body {
   font-size: 1.15rem;
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: 2px;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -108,7 +108,7 @@ body {
 .mode-tab {
   flex: 0 0 auto;
   padding: 8px 20px;
-  border-radius: 999px;
+  border-radius: 2px;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--muted);
@@ -147,7 +147,7 @@ body {
   background: var(--panel);
   border: 1px solid var(--border);
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 2px;
 }
 
 /* ---- Board ---- */
@@ -173,7 +173,7 @@ body {
 .tile {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--tile-hidden);
   display: grid;
   place-items: center;
@@ -230,7 +230,7 @@ body {
   min-width: 0;
   height: 50px;
   border: none;
-  border-radius: 7px;
+  border-radius: 2px;
   background: var(--key-bg);
   color: var(--key-text);
   font-size: 1rem;
@@ -264,7 +264,7 @@ body {
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .modal {
   background: var(--panel);
-  border-radius: 16px;
+  border-radius: 2px;
   padding: 26px 22px 22px;
   max-width: 420px;
   width: 100%;
@@ -327,7 +327,7 @@ body {
 }
 .help-ok { width: 100%; padding: 14px; }
 .key-demo {
-  width: 30px; height: 30px; border-radius: 6px;
+  width: 30px; height: 30px; border-radius: 2px;
   display: grid; place-items: center; font-weight: 800; color: #fff;
 }
 .key-demo.correct { background: var(--correct); }
@@ -357,7 +357,7 @@ body {
 
 .win-record {
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 2px;
   padding: 14px 14px 12px;
   margin-top: 4px;
 }
@@ -376,7 +376,7 @@ body {
 .wr-bar {
   background: var(--correct);
   color: #fff; font-weight: 800; font-size: 0.82rem;
-  padding: 3px 8px; border-radius: 4px;
+  padding: 3px 8px; border-radius: 0;
   min-width: 24px; text-align: right;
   box-sizing: border-box;
   transition: width 0.5s ease;
@@ -388,7 +388,7 @@ body {
 .primary-btn, .secondary-btn {
   flex: 1;
   padding: 13px;
-  border-radius: 10px;
+  border-radius: 2px;
   border: none;
   font-weight: 800;
   font-size: 1rem;
@@ -407,7 +407,7 @@ body {
   background: var(--text);
   color: var(--bg);
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: 2px;
   font-weight: 700;
   z-index: 100;
   box-shadow: 0 6px 20px var(--shadow);
