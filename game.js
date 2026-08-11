@@ -20,15 +20,6 @@
 
   // ---- İkonlar (emoji yerine satır içi SVG) ----
   const ICONS = {
-    fox:
-      '<svg class="ttl-ico" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">' +
-      '<path d="M32 54 L9 21 L19 11 L28 22 Q32 24 36 22 L45 11 L55 21 Z" fill="#e8862a"/>' +
-      '<path d="M19 11 L24 19 L28 22 L21.5 20 Z" fill="#cf7015"/>' +
-      '<path d="M45 11 L40 19 L36 22 L42.5 20 Z" fill="#cf7015"/>' +
-      '<path d="M32 54 L21 37 Q32 41 43 37 Z" fill="#ffffff"/>' +
-      '<circle cx="24" cy="29" r="2.7" fill="#2b2320"/>' +
-      '<circle cx="40" cy="29" r="2.7" fill="#2b2320"/>' +
-      '<circle cx="32" cy="43" r="2.5" fill="#2b2320"/></svg>',
     moon:
       '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
       '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z" fill="currentColor"/></svg>',
@@ -416,7 +407,7 @@
 
   function showEndModal(won) {
     const s = getStats(state.mode);
-    $("#end-title").innerHTML = won ? ICONS.fox + " Kazandın!" : "Oyun bitti";
+    $("#end-title").textContent = won ? "Kazandın!" : "Oyun bitti";
     $("#end-sub").textContent = won
       ? `Aferin! ${state.words.length} kelime ve ${state.guessed.size} harf kullandın.`
       : `Tüm canlar bitti. ${state.words.length} kelime açıldı.`;
@@ -437,7 +428,7 @@
 
   // ---- Paylaşım ----
   function buildShareText() {
-    const title = state.mode === "daily" ? `FoxiMax #${state.puzzleNo}` : "FoxiMax (Antrenman)";
+    const title = state.mode === "daily" ? `TilkiMaks #${state.puzzleNo}` : "TilkiMaks (Antrenman)";
     const result = state.status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - state.wrong;

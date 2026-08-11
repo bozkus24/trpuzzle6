@@ -74,8 +74,12 @@ body {
   align-items: center;
   gap: 8px;
 }
-.brand .fox { display: inline-flex; filter: drop-shadow(0 1px 1px var(--shadow)); }
-.brand .fox svg { display: block; }
+.brand .logo {
+  height: 34px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 1px 1px var(--shadow));
+}
 .icon-btn svg { display: block; }
 .topbar-right { display: flex; gap: 6px; }
 .icon-btn {
