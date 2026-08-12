@@ -18,6 +18,20 @@
   ];
   const ALPHABET = new Set("ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split(""));
 
+  const TR_MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+  // ---- İkonlar (mod butonu için satır içi SVG) ----
+  const ICONS = {
+    calendar:
+      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="3" y="4.5" width="18" height="17"/><line x1="3" y1="9.5" x2="21" y2="9.5"/>' +
+      '<line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>',
+    infinity:
+      '<svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path fill="currentColor" ' +
+      'd="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/></svg>',
+  };
+
   // ---- Yardımcılar ----
   const $ = (sel) => document.querySelector(sel);
   const trUpper = (ch) => ch.toLocaleUpperCase("tr-TR");
@@ -484,15 +498,35 @@
     if (sw) sw.checked = theme === "dark";
   }
 
-  // ---- Mod (kendi yeri: başlık altındaki sekmeler) ----
+  // ---- Mod (üstteki "Oyun modu" panelinden) ----
   function updateModeUI() {
-    document.querySelectorAll(".mode-tab").forEach((b) =>
+    document.querySelectorAll(".mode-opt").forEach((b) =>
       b.classList.toggle("active", b.dataset.mode === state.mode)
     );
   }
+  function updateModeButton() {
+    const b = $("#mode-btn");
+    if (b) b.innerHTML = state.mode === "daily" ? ICONS.calendar : ICONS.infinity;
+  }
+  function updateInfoLine() {
+    const el = $("#puzzle-info");
+    if (!el) return;
+    if (state.mode === "daily") {
+      const d = new Date();
+      el.textContent =
+        `Bulmaca #${state.puzzleNo} · Günlük · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
+    } else {
+      el.textContent = "Sınırsız mod · rastgele bulmaca";
+    }
+  }
+  function syncModeUI() {
+    updateModeUI();
+    updateModeButton();
+    updateInfoLine();
+  }
   function setMode(mode) {
     startGame(mode);
-    updateModeUI();
+    syncModeUI();
   }
 
   // ---- Olay bağlama ----
@@ -501,8 +535,11 @@
     $("#stats-btn").addEventListener("click", showStats);
     $("#settings-btn").addEventListener("click", () => {
       updateThemeUI(currentTheme());
-      updateModeUI();
       openModal("#settings-modal");
+    });
+    $("#mode-btn").addEventListener("click", () => {
+      updateModeUI();
+      openModal("#mode-modal");
     });
     $("#share-btn").addEventListener("click", share);
     $("#practice-again-btn").addEventListener("click", () => {
@@ -513,8 +550,11 @@
     $("#theme-switch").addEventListener("change", (e) =>
       setTheme(e.target.checked ? "dark" : "light")
     );
-    document.querySelectorAll(".mode-tab").forEach((t) =>
-      t.addEventListener("click", () => setMode(t.dataset.mode))
+    document.querySelectorAll(".mode-opt").forEach((t) =>
+      t.addEventListener("click", () => {
+        setMode(t.dataset.mode);
+        closeModal($("#mode-modal"));
+      })
     );
 
     document.querySelectorAll("[data-close]").forEach((btn) =>
@@ -561,7 +601,7 @@
     if (!hideHelp) openModal("#help-modal");
 
     startGame("daily");
-    updateModeUI();
+    syncModeUI();
   }
 
   if (document.readyState === "loading") {

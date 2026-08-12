@@ -16,6 +16,7 @@
       Tilkile
     </h1>
     <div class="topbar-right">
+      <button class="icon-btn" id="mode-btn" aria-label="Oyun modu"></button>
       <button class="icon-btn" id="help-btn" aria-label="Nasıl oynanır">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/>
@@ -39,23 +40,7 @@
     </div>
   </header>
 
-  <nav class="modes" id="mode-seg">
-    <button class="mode-tab active" data-mode="daily">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="3" y="4.5" width="18" height="17" rx="0"/>
-        <line x1="3" y1="9.5" x2="21" y2="9.5"/>
-        <line x1="8" y1="2.5" x2="8" y2="6.5"/>
-        <line x1="16" y1="2.5" x2="16" y2="6.5"/>
-      </svg>
-      <span>Günlük</span>
-    </button>
-    <button class="mode-tab" data-mode="practice">
-      <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true">
-        <path fill="currentColor" d="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/>
-      </svg>
-      <span>Sınırsız</span>
-    </button>
-  </nav>
+  <div class="puzzle-info" id="puzzle-info"></div>
 
   <main class="game">
     <div class="status-row">
@@ -97,6 +82,31 @@
           <span>Bir daha gösterme</span>
         </label>
         <button class="primary-btn help-ok" data-close>Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Oyun modu -->
+  <div class="modal-overlay" id="mode-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Oyun modu</h2>
+      <div class="mode-list" id="mode-seg">
+        <button class="mode-opt" data-mode="daily">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4.5" width="18" height="17" rx="0"/>
+            <line x1="3" y1="9.5" x2="21" y2="9.5"/>
+            <line x1="8" y1="2.5" x2="8" y2="6.5"/>
+            <line x1="16" y1="2.5" x2="16" y2="6.5"/>
+          </svg>
+          <span>Günlük oyun</span>
+        </button>
+        <button class="mode-opt" data-mode="practice">
+          <svg viewBox="0 0 16 16" width="24" height="24" aria-hidden="true">
+            <path fill="currentColor" d="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/>
+          </svg>
+          <span>Sınırsız mod</span>
+        </button>
       </div>
     </div>
   </div>

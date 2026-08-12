@@ -307,33 +307,36 @@ body {
 .key-demo.correct { background: var(--correct); }
 .key-demo.absent { background: var(--absent); }
 
-/* ---- Mod seçici (kendi yeri: başlığın altında) ---- */
-.modes {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+/* ---- Bulmaca bilgi satırı (başlık altında) ---- */
+.puzzle-info {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
   padding: 12px 14px 2px;
+  min-height: 1.2em;
 }
-.mode-tab {
-  flex: 1;
-  max-width: 180px;
+
+/* ---- Oyun modu paneli ---- */
+.mode-list { display: flex; flex-direction: column; gap: 10px; }
+.mode-opt {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: 10px;
+  padding: 16px;
   border: 1px solid var(--border);
   background: var(--panel);
-  color: var(--muted);
+  color: var(--text);
   border-radius: 2px;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 800;
+  font-size: 1.05rem;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.mode-tab svg { display: block; flex: 0 0 auto; }
-.mode-tab:hover { border-color: var(--correct); }
-.mode-tab.active {
+.mode-opt svg { display: block; flex: 0 0 auto; }
+.mode-opt:hover { border-color: var(--correct); }
+.mode-opt.active {
   background: var(--correct);
   border-color: var(--correct);
   color: #fff;
