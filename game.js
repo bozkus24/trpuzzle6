@@ -10,7 +10,7 @@
   // ---- Sabitler ----
   const MAX_WRONG = 8;
   const WORD_LEN = 5;
-  const LAUNCH = new Date(2024, 0, 1); // #0 günü
+  const LAUNCH = new Date(2026, 7, 1); // 1 Ağustos 2026 = #1 günü
   const KEY_ROWS = [
     ["E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ"],
@@ -64,7 +64,7 @@
     return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   }
   function puzzleNumber(d) {
-    return Math.floor((localMidnight(d) - localMidnight(LAUNCH)) / 86400000);
+    return Math.floor((localMidnight(d) - localMidnight(LAUNCH)) / 86400000) + 1;
   }
 
   // ---- Durum ----
