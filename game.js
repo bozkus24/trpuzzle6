@@ -18,21 +18,6 @@
   ];
   const ALPHABET = new Set("ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split(""));
 
-  // ---- İkonlar (emoji yerine satır içi SVG) ----
-  const ICONS = {
-    moon:
-      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
-      '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z" fill="currentColor"/></svg>',
-    sun:
-      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
-      '<circle cx="12" cy="12" r="4.2" fill="currentColor"/>' +
-      '<g stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
-      '<line x1="12" y1="1.8" x2="12" y2="4.4"/><line x1="12" y1="19.6" x2="12" y2="22.2"/>' +
-      '<line x1="1.8" y1="12" x2="4.4" y2="12"/><line x1="19.6" y1="12" x2="22.2" y2="12"/>' +
-      '<line x1="4.6" y1="4.6" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19.4" y2="19.4"/>' +
-      '<line x1="4.6" y1="19.4" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19.4" y2="4.6"/></g></svg>',
-  };
-
   // ---- Yardımcılar ----
   const $ = (sel) => document.querySelector(sel);
   const trUpper = (ch) => ch.toLocaleUpperCase("tr-TR");
@@ -368,7 +353,7 @@
 
   function statsSummaryHTML(mode, s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
-    const label = mode === "daily" ? "Günlük" : "Antrenman";
+    const label = mode === "daily" ? "Günlük" : "Sınırsız";
     return (
       '<div class="stats-lines">' +
       `<div class="stats-mode">${label} İstatistikleri</div>` +
@@ -428,7 +413,7 @@
 
   // ---- Paylaşım ----
   function buildShareText() {
-    const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Antrenman)";
+    const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Sınırsız)";
     const result = state.status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - state.wrong;
@@ -481,43 +466,59 @@
     cdTimer = setInterval(tick, 1000);
   }
 
-  // ---- Tema ----
+  // ---- Tema (Ayarlar panelinden) ----
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  }
   function applyTheme(theme) {
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
-    $("#theme-btn").innerHTML = theme === "dark" ? ICONS.sun : ICONS.moon;
+    updateThemeUI(theme);
   }
-  function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-    const next = cur === "dark" ? "light" : "dark";
-    try { localStorage.setItem("foximax-theme", next); } catch (e) {}
-    applyTheme(next);
+  function setTheme(theme) {
+    try { localStorage.setItem("foximax-theme", theme); } catch (e) {}
+    applyTheme(theme);
+  }
+  function updateThemeUI(theme) {
+    document.querySelectorAll("#theme-seg .seg-btn").forEach((b) =>
+      b.classList.toggle("active", b.dataset.themeChoice === theme)
+    );
   }
 
-  // ---- Mod değiştir ----
-  function setMode(mode) {
-    if (state.mode === mode && state.status === "playing") {
-      // aynı moda tekrar basmak bir şey yapmasın
-    }
-    document.querySelectorAll(".mode-tab").forEach((t) =>
-      t.classList.toggle("active", t.dataset.mode === mode)
+  // ---- Mod (Ayarlar panelinden) ----
+  function updateModeUI() {
+    document.querySelectorAll("#mode-seg .seg-btn").forEach((b) =>
+      b.classList.toggle("active", b.dataset.mode === state.mode)
     );
+  }
+  function setMode(mode) {
     startGame(mode);
+    updateModeUI();
   }
 
   // ---- Olay bağlama ----
   function bindEvents() {
     $("#help-btn").addEventListener("click", () => openModal("#help-modal"));
     $("#stats-btn").addEventListener("click", showStats);
-    $("#theme-btn").addEventListener("click", toggleTheme);
+    $("#settings-btn").addEventListener("click", () => {
+      updateThemeUI(currentTheme());
+      updateModeUI();
+      openModal("#settings-modal");
+    });
     $("#share-btn").addEventListener("click", share);
     $("#practice-again-btn").addEventListener("click", () => {
       closeModal($("#end-modal"));
       startGame("practice", { fresh: true });
     });
 
-    document.querySelectorAll(".mode-tab").forEach((tab) =>
-      tab.addEventListener("click", () => setMode(tab.dataset.mode))
+    document.querySelectorAll("#theme-seg .seg-btn").forEach((b) =>
+      b.addEventListener("click", () => setTheme(b.dataset.themeChoice))
+    );
+    document.querySelectorAll("#mode-seg .seg-btn").forEach((b) =>
+      b.addEventListener("click", () => {
+        setMode(b.dataset.mode);
+        closeModal($("#settings-modal"));
+      })
     );
 
     document.querySelectorAll("[data-close]").forEach((btn) =>
@@ -564,6 +565,7 @@
     if (!hideHelp) openModal("#help-modal");
 
     startGame("daily");
+    updateModeUI();
   }
 
   if (document.readyState === "loading") {

@@ -98,38 +98,12 @@ body {
 .icon-btn:hover { background: var(--key-bg); }
 #help-btn { font-weight: 800; }
 
-/* ---- Mode tabs ---- */
-.modes {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  padding: 12px 14px 4px;
-}
-.mode-tab {
-  flex: 0 0 auto;
-  padding: 8px 20px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.mode-tab.active {
-  background: var(--correct);
-  border-color: var(--correct);
-  color: #fff;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-
 /* ---- Game area ---- */
 .game {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 8px 14px 14px;
+  padding: 14px 14px;
 }
 .status-row {
   display: flex;
@@ -332,6 +306,42 @@ body {
 }
 .key-demo.correct { background: var(--correct); }
 .key-demo.absent { background: var(--absent); }
+
+/* ---- Ayarlar paneli ---- */
+.setting-group { margin-bottom: 20px; }
+.setting-group:last-child { margin-bottom: 4px; }
+.setting-label {
+  font-size: 0.75rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.seg { display: flex; gap: 10px; }
+.seg-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.seg-btn svg { display: block; }
+.seg-btn:hover { border-color: var(--correct); }
+.seg-btn.active {
+  background: var(--correct);
+  border-color: var(--correct);
+  color: #fff;
+}
 
 /* ---- Stats ---- */
 .stats-grid {
