@@ -304,23 +304,21 @@ body {
   height: 20px;
   border: 2px solid var(--absent);
   border-radius: 2px;
-  background: var(--panel);      /* açık modda beyaz; işaretlense de beyaz kalır */
+  background-color: var(--panel);   /* açık modda beyaz; işaretlense de beyaz kalır */
+  background-repeat: no-repeat;
+  background-position: center;      /* tik tam ortada */
+  background-size: 14px 14px;
   cursor: pointer;
-  position: relative;
   flex: 0 0 auto;
   transition: border-color 0.15s;
 }
-.dont-show input:checked { border-color: var(--correct); }
-.dont-show input:checked::after {   /* yalnızca tik */
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 1px;
-  width: 6px;
-  height: 10px;
-  border: solid var(--correct);
-  border-width: 0 2.5px 2.5px 0;
-  transform: rotate(45deg);
+/* işaretliyken yalnızca siyah tik (dolgu yok) */
+.dont-show input:checked {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20fill='none'%20stroke='%23000000'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'%20d='M5%2012%20L10%2017%20L19%207'/%3E%3C/svg%3E");
+}
+/* koyu temada siyah tik görünmez; beyaz tik kullan */
+:root[data-theme="dark"] .dont-show input:checked {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20fill='none'%20stroke='%23ffffff'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'%20d='M5%2012%20L10%2017%20L19%207'/%3E%3C/svg%3E");
 }
 .help-ok { width: 100%; padding: 14px; }
 .key-demo {
