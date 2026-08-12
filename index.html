@@ -118,11 +118,22 @@
 
       <div class="setting-row">
         <div class="setting-row-text">
-          <div class="setting-name">Karanlık mod</div>
-          <div class="setting-desc muted">Aydınlık / karanlık tema arasında geçiş yap</div>
+          <div class="setting-name">Tema</div>
+          <div class="setting-desc muted">Koyu veya açık.</div>
+        </div>
+        <select id="theme-select" class="setting-select" aria-label="Tema">
+          <option value="dark">Koyu</option>
+          <option value="light">Açık</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <div class="setting-name">Ekran klavyesi</div>
+          <div class="setting-desc muted">Fiziksel klavye kullanıyorsanız kapatabilirsiniz.</div>
         </div>
         <label class="switch">
-          <input type="checkbox" id="theme-switch" />
+          <input type="checkbox" id="keyboard-switch" checked />
           <span class="switch-slider"></span>
         </label>
       </div>

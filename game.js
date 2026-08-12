@@ -493,8 +493,18 @@
     applyTheme(theme);
   }
   function updateThemeUI(theme) {
-    const sw = $("#theme-switch");
-    if (sw) sw.checked = theme === "dark";
+    const sel = $("#theme-select");
+    if (sel) sel.value = theme;
+  }
+
+  // ---- Ekran klavyesi görünürlüğü ----
+  function applyKeyboard(show) {
+    document.body.classList.toggle("kb-hidden", !show);
+    const sw = $("#keyboard-switch");
+    if (sw) sw.checked = show;
+  }
+  function keyboardShown() {
+    return !document.body.classList.contains("kb-hidden");
   }
 
   // ---- Mod (üstteki "Oyun modu" panelinden) ----
@@ -534,6 +544,8 @@
     $("#stats-btn").addEventListener("click", showStats);
     $("#settings-btn").addEventListener("click", () => {
       updateThemeUI(currentTheme());
+      const kb = $("#keyboard-switch");
+      if (kb) kb.checked = keyboardShown();
       openModal("#settings-modal");
     });
     $("#mode-btn").addEventListener("click", () => {
@@ -546,9 +558,12 @@
       startGame("practice", { fresh: true });
     });
 
-    $("#theme-switch").addEventListener("change", (e) =>
-      setTheme(e.target.checked ? "dark" : "light")
-    );
+    $("#theme-select").addEventListener("change", (e) => setTheme(e.target.value));
+    $("#keyboard-switch").addEventListener("change", (e) => {
+      const show = e.target.checked;
+      try { localStorage.setItem("foximax-keyboard", show ? "1" : "0"); } catch (err) {}
+      applyKeyboard(show);
+    });
     document.querySelectorAll(".mode-opt").forEach((t) =>
       t.addEventListener("click", () => {
         setMode(t.dataset.mode);
@@ -582,6 +597,10 @@
       try { return localStorage.getItem("foximax-theme"); } catch (e) { return null; }
     })();
     applyTheme(savedTheme === "dark" ? "dark" : "light");
+
+    let kbPref = null;
+    try { kbPref = localStorage.getItem("foximax-keyboard"); } catch (e) {}
+    applyKeyboard(kbPref !== "0"); // varsayılan: açık
 
     bindEvents();
 
