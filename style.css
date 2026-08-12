@@ -298,10 +298,29 @@ body {
   user-select: none;
 }
 .dont-show input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--correct);
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--absent);
+  border-radius: 2px;
+  background: var(--panel);      /* açık modda beyaz; işaretlense de beyaz kalır */
   cursor: pointer;
+  position: relative;
+  flex: 0 0 auto;
+  transition: border-color 0.15s;
+}
+.dont-show input:checked { border-color: var(--correct); }
+.dont-show input:checked::after {   /* yalnızca tik */
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid var(--correct);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
 }
 .help-ok { width: 100%; padding: 14px; }
 .key-demo {
