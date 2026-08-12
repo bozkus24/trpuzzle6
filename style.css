@@ -307,41 +307,76 @@ body {
 .key-demo.correct { background: var(--correct); }
 .key-demo.absent { background: var(--absent); }
 
-/* ---- Ayarlar paneli ---- */
-.setting-group { margin-bottom: 20px; }
-.setting-group:last-child { margin-bottom: 4px; }
-.setting-label {
-  font-size: 0.75rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-.seg { display: flex; gap: 10px; }
-.seg-btn {
-  flex: 1;
+/* ---- Mod seçici (kendi yeri: başlığın altında) ---- */
+.modes {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 8px;
-  padding: 16px 8px;
+  justify-content: center;
+  padding: 12px 14px 2px;
+}
+.mode-tab {
+  flex: 1;
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--muted);
   border-radius: 2px;
-  cursor: pointer;
   font-weight: 700;
   font-size: 0.95rem;
+  cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.seg-btn svg { display: block; }
-.seg-btn:hover { border-color: var(--correct); }
-.seg-btn.active {
+.mode-tab svg { display: block; flex: 0 0 auto; }
+.mode-tab:hover { border-color: var(--correct); }
+.mode-tab.active {
   background: var(--correct);
   border-color: var(--correct);
   color: #fff;
 }
+
+/* ---- Ayarlar paneli: tema aç/kapa anahtarı ---- */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.setting-name { font-weight: 700; font-size: 1.02rem; }
+.setting-desc { font-size: 0.85rem; margin-top: 2px; }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 30px;
+  flex: 0 0 auto;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: var(--absent);
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  top: 4px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.2s;
+}
+.switch input:checked + .switch-slider { background: var(--correct); }
+.switch input:checked + .switch-slider::before { transform: translateX(22px); }
 
 /* ---- Stats ---- */
 .stats-grid {

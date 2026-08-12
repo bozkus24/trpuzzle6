@@ -480,14 +480,13 @@
     applyTheme(theme);
   }
   function updateThemeUI(theme) {
-    document.querySelectorAll("#theme-seg .seg-btn").forEach((b) =>
-      b.classList.toggle("active", b.dataset.themeChoice === theme)
-    );
+    const sw = $("#theme-switch");
+    if (sw) sw.checked = theme === "dark";
   }
 
-  // ---- Mod (Ayarlar panelinden) ----
+  // ---- Mod (kendi yeri: başlık altındaki sekmeler) ----
   function updateModeUI() {
-    document.querySelectorAll("#mode-seg .seg-btn").forEach((b) =>
+    document.querySelectorAll(".mode-tab").forEach((b) =>
       b.classList.toggle("active", b.dataset.mode === state.mode)
     );
   }
@@ -511,14 +510,11 @@
       startGame("practice", { fresh: true });
     });
 
-    document.querySelectorAll("#theme-seg .seg-btn").forEach((b) =>
-      b.addEventListener("click", () => setTheme(b.dataset.themeChoice))
+    $("#theme-switch").addEventListener("change", (e) =>
+      setTheme(e.target.checked ? "dark" : "light")
     );
-    document.querySelectorAll("#mode-seg .seg-btn").forEach((b) =>
-      b.addEventListener("click", () => {
-        setMode(b.dataset.mode);
-        closeModal($("#settings-modal"));
-      })
+    document.querySelectorAll(".mode-tab").forEach((t) =>
+      t.addEventListener("click", () => setMode(t.dataset.mode))
     );
 
     document.querySelectorAll("[data-close]").forEach((btn) =>
