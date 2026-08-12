@@ -117,15 +117,6 @@ body {
 .lives { display: flex; align-items: center; gap: 8px; }
 .lives-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 .hearts { font-size: 1.1rem; letter-spacing: 1px; }
-.wordcount {
-  font-size: 0.85rem;
-  color: var(--muted);
-  font-weight: 700;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 2px;
-}
 
 /* ---- Board ---- */
 .board {

@@ -288,7 +288,6 @@
         : '<span style="color:var(--heart-lost)">○</span>';
     }
     $("#hearts").innerHTML = hearts;
-    $("#wordcount").textContent = "Kelime: " + state.words.length;
 
     // tahta
     const board = $("#board");
