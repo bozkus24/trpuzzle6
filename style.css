@@ -151,7 +151,8 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 2px;
-  background: var(--tile-hidden);
+  background: var(--tile-empty);
+  border: 2px solid var(--tile-hidden);
   display: grid;
   place-items: center;
   font-size: 1.6rem;
@@ -160,16 +161,16 @@ body {
   text-transform: uppercase;
   user-select: none;
 }
-.tile.revealed { background: var(--correct); }
-.tile.miss { background: var(--absent); }        /* önceden denenmiş ama çıkmamış harf */
-.tile.solved-row { background: var(--correct-dark); }
-/* harf açılırken küçük flip animasyonu */
-.tile.flip { animation: flipReveal 0.5s ease; }
+.tile.revealed { background: var(--correct); border-color: var(--correct-dark); }
+.tile.miss { background: var(--absent); border-color: var(--absent); }  /* önceden denenmiş ama çıkmamış harf */
+.tile.solved-row { background: var(--correct-dark); border-color: var(--correct-dark); }
+/* harf açılırken yatay (rotateY) çevirme animasyonu */
+.tile.flip { animation: flipReveal 0.7s ease; }
 @keyframes flipReveal {
-  0%   { transform: rotateX(0deg)   scale(1);    }
-  45%  { transform: rotateX(90deg)  scale(1.06); }
-  55%  { transform: rotateX(90deg)  scale(1.06); }
-  100% { transform: rotateX(0deg)   scale(1);    }
+  0%   { transform: rotateY(0deg)   scale(1);    }
+  45%  { transform: rotateY(90deg)  scale(1.05); }
+  55%  { transform: rotateY(90deg)  scale(1.05); }
+  100% { transform: rotateY(0deg)   scale(1);    }
 }
 @media (prefers-reduced-motion: reduce) {
   .word-row.drop, .tile.flip { animation: none; }
