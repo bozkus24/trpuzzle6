@@ -4,50 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#e8862a" />
-  <title>FoxiMax — Günlük Kelime Bulmacası</title>
-  <meta name="description" content="FoxiMax: Türkçe günlük kelime bulmacası. Harfleri tahmin et, gizli kelimeleri çöz — ama her yanlış tahmin bulmacayı büyütür!" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cpath%20d='M32%2054%20L9%2021%20L19%2011%20L28%2022%20Q32%2024%2036%2022%20L45%2011%20L55%2021%20Z'%20fill='%23e8862a'/%3E%3Cpath%20d='M32%2054%20L21%2037%20Q32%2041%2043%2037%20Z'%20fill='%23ffffff'/%3E%3Ccircle%20cx='24'%20cy='29'%20r='2.7'%20fill='%232b2320'/%3E%3Ccircle%20cx='40'%20cy='29'%20r='2.7'%20fill='%232b2320'/%3E%3Ccircle%20cx='32'%20cy='43'%20r='2.5'%20fill='%232b2320'/%3E%3C/svg%3E" />
+  <title>Tilkile — Günlük Kelime Bulmacası</title>
+  <meta name="description" content="Tilkile: Türkçe günlük kelime bulmacası. Harfleri tahmin et, gizli kelimeleri çöz — ama her yanlış tahmin bulmacayı büyütür!" />
+  <link rel="icon" href="logo.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="topbar">
-    <button class="icon-btn" id="help-btn" aria-label="Nasıl oynanır">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/>
-        <path d="M9.2 9.2a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.5-2.8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="12" cy="17.2" r="1.2" fill="currentColor"/>
-      </svg>
-    </button>
     <h1 class="brand">
-      <span class="fox" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true">
-          <path d="M32 54 L9 21 L19 11 L28 22 Q32 24 36 22 L45 11 L55 21 Z" fill="#e8862a"/>
-          <path d="M19 11 L24 19 L28 22 L21.5 20 Z" fill="#cf7015"/>
-          <path d="M45 11 L40 19 L36 22 L42.5 20 Z" fill="#cf7015"/>
-          <path d="M32 54 L21 37 Q32 41 43 37 Z" fill="#ffffff"/>
-          <circle cx="24" cy="29" r="2.7" fill="#2b2320"/>
-          <circle cx="40" cy="29" r="2.7" fill="#2b2320"/>
-          <circle cx="32" cy="43" r="2.5" fill="#2b2320"/>
-        </svg>
-      </span>
-      FoxiMax
+      <img class="logo" src="logo.png" alt="Tilkile logosu" />
+      Tilkile
     </h1>
     <div class="topbar-right">
-      <button class="icon-btn" id="stats-btn" aria-label="İstatistikler">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <rect x="3" y="13" width="4.5" height="8" rx="1.2" fill="currentColor"/>
-          <rect x="9.75" y="8" width="4.5" height="13" rx="1.2" fill="currentColor"/>
-          <rect x="16.5" y="4" width="4.5" height="17" rx="1.2" fill="currentColor"/>
+      <button class="icon-btn" id="mode-btn" aria-label="Oyun modu"></button>
+      <button class="icon-btn" id="help-btn" aria-label="Nasıl oynanır">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/>
+          <path d="M9.2 9.2a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.5-2.8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="17.2" r="1.2" fill="currentColor"/>
         </svg>
       </button>
-      <button class="icon-btn" id="theme-btn" aria-label="Tema"></button>
+      <button class="icon-btn" id="stats-btn" aria-label="İstatistikler">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <rect x="3.5" y="11" width="5" height="10" fill="currentColor"/>
+          <rect x="9.5" y="4" width="5" height="17" fill="currentColor"/>
+          <rect x="15.5" y="8" width="5" height="13" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="settings-btn" aria-label="Ayarlar">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
     </div>
   </header>
 
-  <nav class="modes">
-    <button class="mode-tab active" data-mode="daily">Günlük</button>
-    <button class="mode-tab" data-mode="practice">Antrenman</button>
-  </nav>
+  <div class="puzzle-info" id="puzzle-info"></div>
 
   <main class="game">
     <div class="status-row">
@@ -55,7 +48,6 @@
         <span class="lives-label">Canlar</span>
         <span class="hearts" id="hearts"></span>
       </div>
-      <div class="wordcount" id="wordcount">Kelime: 1</div>
     </div>
 
     <section class="board" id="board" aria-live="polite"></section>
@@ -70,7 +62,7 @@
     <div class="modal">
       <button class="close-btn" data-close aria-label="Kapat">×</button>
       <h2>Nasıl Oynanır</h2>
-      <p><strong>FoxiMax</strong>, klasik harf tahmin oyununa kurnaz bir kıvrım getirir.</p>
+      <p><strong>Tilkile</strong>, klasik harf tahmin oyununa kurnaz bir kıvrım getirir.</p>
       <ul>
         <li>Gizli kelimeyi <strong>harfleri tek tek tahmin ederek</strong> çöz.</li>
         <li>Tahmin ettiğin harf kelimede varsa, tüm yerlerinde <strong>açığa çıkar</strong>.</li>
@@ -82,7 +74,69 @@
         <div><span class="key-demo correct">A</span> Kelimede var</div>
         <div><span class="key-demo absent">B</span> Kelimede yok</div>
       </div>
-      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serini uzat. <strong>Antrenman</strong> modunda rastgele oyna ve paylaş.</p>
+      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serini uzat. <strong>Sınırsız</strong> modda rastgele oyna ve paylaş.</p>
+      <div class="help-footer">
+        <label class="dont-show">
+          <input type="checkbox" id="dont-show-help" />
+          <span>Bir daha gösterme</span>
+        </label>
+        <button class="primary-btn help-ok" data-close>Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Oyun modu -->
+  <div class="modal-overlay" id="mode-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Oyun modu</h2>
+      <div class="mode-list" id="mode-seg">
+        <button class="mode-opt" data-mode="daily">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4.5" width="18" height="17" rx="0"/>
+            <line x1="3" y1="9.5" x2="21" y2="9.5"/>
+            <line x1="8" y1="2.5" x2="8" y2="6.5"/>
+            <line x1="16" y1="2.5" x2="16" y2="6.5"/>
+          </svg>
+          <span>Günlük oyun</span>
+        </button>
+        <button class="mode-opt" data-mode="practice">
+          <svg viewBox="0 0 16 16" width="24" height="24" aria-hidden="true">
+            <path fill="currentColor" d="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/>
+          </svg>
+          <span>Sınırsız mod</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ayarlar -->
+  <div class="modal-overlay" id="settings-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Ayarlar</h2>
+
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <div class="setting-name">Tema</div>
+          <div class="setting-desc muted">Koyu veya açık.</div>
+        </div>
+        <select id="theme-select" class="setting-select" aria-label="Tema">
+          <option value="dark">Koyu</option>
+          <option value="light">Açık</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <div class="setting-name">Ekran klavyesi</div>
+          <div class="setting-desc muted">Fiziksel klavye kullanıyorsanız kapatabilirsiniz.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="keyboard-switch" checked />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
     </div>
   </div>
 

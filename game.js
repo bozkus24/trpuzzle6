@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FoxiMax — Türkçe günlük kelime bulmacası
+   Tilkile — Türkçe günlük kelime bulmacası
    Mekanik: harfleri tek tek tahmin et. Harf kelimede varsa açığa çıkar;
    yoksa ızgaraya yeni bir kelime eklenir ve bir can gider. 8 yanlışta oyun biter.
    ========================================================================== */
@@ -10,7 +10,7 @@
   // ---- Sabitler ----
   const MAX_WRONG = 8;
   const WORD_LEN = 5;
-  const LAUNCH = new Date(2024, 0, 1); // #0 günü
+  const LAUNCH = new Date(2026, 7, 1); // 1 Ağustos 2026 = #1 günü
   const KEY_ROWS = [
     ["E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ"],
@@ -18,28 +18,18 @@
   ];
   const ALPHABET = new Set("ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split(""));
 
-  // ---- İkonlar (emoji yerine satır içi SVG) ----
+  const TR_MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+  // ---- İkonlar (mod butonu için satır içi SVG) ----
   const ICONS = {
-    fox:
-      '<svg class="ttl-ico" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">' +
-      '<path d="M32 54 L9 21 L19 11 L28 22 Q32 24 36 22 L45 11 L55 21 Z" fill="#e8862a"/>' +
-      '<path d="M19 11 L24 19 L28 22 L21.5 20 Z" fill="#cf7015"/>' +
-      '<path d="M45 11 L40 19 L36 22 L42.5 20 Z" fill="#cf7015"/>' +
-      '<path d="M32 54 L21 37 Q32 41 43 37 Z" fill="#ffffff"/>' +
-      '<circle cx="24" cy="29" r="2.7" fill="#2b2320"/>' +
-      '<circle cx="40" cy="29" r="2.7" fill="#2b2320"/>' +
-      '<circle cx="32" cy="43" r="2.5" fill="#2b2320"/></svg>',
-    moon:
-      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
-      '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z" fill="currentColor"/></svg>',
-    sun:
-      '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
-      '<circle cx="12" cy="12" r="4.2" fill="currentColor"/>' +
-      '<g stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
-      '<line x1="12" y1="1.8" x2="12" y2="4.4"/><line x1="12" y1="19.6" x2="12" y2="22.2"/>' +
-      '<line x1="1.8" y1="12" x2="4.4" y2="12"/><line x1="19.6" y1="12" x2="22.2" y2="12"/>' +
-      '<line x1="4.6" y1="4.6" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19.4" y2="19.4"/>' +
-      '<line x1="4.6" y1="19.4" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19.4" y2="4.6"/></g></svg>',
+    calendar:
+      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="3" y="4.5" width="18" height="17"/><line x1="3" y1="9.5" x2="21" y2="9.5"/>' +
+      '<line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>',
+    infinity:
+      '<svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path fill="currentColor" ' +
+      'd="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/></svg>',
   };
 
   // ---- Yardımcılar ----
@@ -74,7 +64,7 @@
     return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   }
   function puzzleNumber(d) {
-    return Math.floor((localMidnight(d) - localMidnight(LAUNCH)) / 86400000);
+    return Math.floor((localMidnight(d) - localMidnight(LAUNCH)) / 86400000) + 1;
   }
 
   // ---- Durum ----
@@ -298,7 +288,6 @@
         : '<span style="color:var(--heart-lost)">○</span>';
     }
     $("#hearts").innerHTML = hearts;
-    $("#wordcount").textContent = "Kelime: " + state.words.length;
 
     // tahta
     const board = $("#board");
@@ -377,7 +366,7 @@
 
   function statsSummaryHTML(mode, s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
-    const label = mode === "daily" ? "Günlük" : "Antrenman";
+    const label = mode === "daily" ? "Günlük" : "Sınırsız";
     return (
       '<div class="stats-lines">' +
       `<div class="stats-mode">${label} İstatistikleri</div>` +
@@ -416,7 +405,7 @@
 
   function showEndModal(won) {
     const s = getStats(state.mode);
-    $("#end-title").innerHTML = won ? ICONS.fox + " Kazandın!" : "Oyun bitti";
+    $("#end-title").textContent = won ? "Kazandın!" : "Oyun bitti";
     $("#end-sub").textContent = won
       ? `Aferin! ${state.words.length} kelime ve ${state.guessed.size} harf kullandın.`
       : `Tüm canlar bitti. ${state.words.length} kelime açıldı.`;
@@ -437,7 +426,7 @@
 
   // ---- Paylaşım ----
   function buildShareText() {
-    const title = state.mode === "daily" ? `FoxiMax #${state.puzzleNo}` : "FoxiMax (Antrenman)";
+    const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Sınırsız)";
     const result = state.status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - state.wrong;
@@ -490,43 +479,96 @@
     cdTimer = setInterval(tick, 1000);
   }
 
-  // ---- Tema ----
+  // ---- Tema (Ayarlar panelinden) ----
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  }
   function applyTheme(theme) {
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
-    $("#theme-btn").innerHTML = theme === "dark" ? ICONS.sun : ICONS.moon;
+    updateThemeUI(theme);
   }
-  function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-    const next = cur === "dark" ? "light" : "dark";
-    try { localStorage.setItem("foximax-theme", next); } catch (e) {}
-    applyTheme(next);
+  function setTheme(theme) {
+    try { localStorage.setItem("foximax-theme", theme); } catch (e) {}
+    applyTheme(theme);
+  }
+  function updateThemeUI(theme) {
+    const sel = $("#theme-select");
+    if (sel) sel.value = theme;
   }
 
-  // ---- Mod değiştir ----
-  function setMode(mode) {
-    if (state.mode === mode && state.status === "playing") {
-      // aynı moda tekrar basmak bir şey yapmasın
-    }
-    document.querySelectorAll(".mode-tab").forEach((t) =>
-      t.classList.toggle("active", t.dataset.mode === mode)
+  // ---- Ekran klavyesi görünürlüğü ----
+  function applyKeyboard(show) {
+    document.body.classList.toggle("kb-hidden", !show);
+    const sw = $("#keyboard-switch");
+    if (sw) sw.checked = show;
+  }
+  function keyboardShown() {
+    return !document.body.classList.contains("kb-hidden");
+  }
+
+  // ---- Mod (üstteki "Oyun modu" panelinden) ----
+  function updateModeUI() {
+    document.querySelectorAll(".mode-opt").forEach((b) =>
+      b.classList.toggle("active", b.dataset.mode === state.mode)
     );
+  }
+  function updateModeButton() {
+    const b = $("#mode-btn");
+    if (b) b.innerHTML = state.mode === "daily" ? ICONS.calendar : ICONS.infinity;
+  }
+  function updateInfoLine() {
+    const el = $("#puzzle-info");
+    if (!el) return;
+    if (state.mode === "daily") {
+      const d = new Date();
+      el.textContent =
+        `Bulmaca #${state.puzzleNo} · Günlük · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
+    } else {
+      el.textContent = "Sınırsız mod · rastgele bulmaca";
+    }
+  }
+  function syncModeUI() {
+    updateModeUI();
+    updateModeButton();
+    updateInfoLine();
+  }
+  function setMode(mode) {
     startGame(mode);
+    syncModeUI();
   }
 
   // ---- Olay bağlama ----
   function bindEvents() {
     $("#help-btn").addEventListener("click", () => openModal("#help-modal"));
     $("#stats-btn").addEventListener("click", showStats);
-    $("#theme-btn").addEventListener("click", toggleTheme);
+    $("#settings-btn").addEventListener("click", () => {
+      updateThemeUI(currentTheme());
+      const kb = $("#keyboard-switch");
+      if (kb) kb.checked = keyboardShown();
+      openModal("#settings-modal");
+    });
+    $("#mode-btn").addEventListener("click", () => {
+      updateModeUI();
+      openModal("#mode-modal");
+    });
     $("#share-btn").addEventListener("click", share);
     $("#practice-again-btn").addEventListener("click", () => {
       closeModal($("#end-modal"));
       startGame("practice", { fresh: true });
     });
 
-    document.querySelectorAll(".mode-tab").forEach((tab) =>
-      tab.addEventListener("click", () => setMode(tab.dataset.mode))
+    $("#theme-select").addEventListener("change", (e) => setTheme(e.target.value));
+    $("#keyboard-switch").addEventListener("change", (e) => {
+      const show = e.target.checked;
+      try { localStorage.setItem("foximax-keyboard", show ? "1" : "0"); } catch (err) {}
+      applyKeyboard(show);
+    });
+    document.querySelectorAll(".mode-opt").forEach((t) =>
+      t.addEventListener("click", () => {
+        setMode(t.dataset.mode);
+        closeModal($("#mode-modal"));
+      })
     );
 
     document.querySelectorAll("[data-close]").forEach((btn) =>
@@ -556,17 +598,28 @@
     })();
     applyTheme(savedTheme === "dark" ? "dark" : "light");
 
+    let kbPref = null;
+    try { kbPref = localStorage.getItem("foximax-keyboard"); } catch (e) {}
+    applyKeyboard(kbPref !== "0"); // varsayılan: açık
+
     bindEvents();
 
-    // ilk açılışta yardım göster (bir kez)
-    let seenHelp = false;
-    try { seenHelp = localStorage.getItem("foximax-seen-help") === "1"; } catch (e) {}
-    if (!seenHelp) {
-      openModal("#help-modal");
-      try { localStorage.setItem("foximax-seen-help", "1"); } catch (e) {}
+    // "Nasıl oynanır" penceresi: kullanıcı "bir daha gösterme" demediyse her açılışta gelir
+    let hideHelp = false;
+    try { hideHelp = localStorage.getItem("foximax-hide-help") === "1"; } catch (e) {}
+    const dontShow = $("#dont-show-help");
+    if (dontShow) {
+      dontShow.checked = hideHelp;
+      dontShow.addEventListener("change", () => {
+        try {
+          localStorage.setItem("foximax-hide-help", dontShow.checked ? "1" : "0");
+        } catch (e) {}
+      });
     }
+    if (!hideHelp) openModal("#help-modal");
 
     startGame("daily");
+    syncModeUI();
   }
 
   if (document.readyState === "loading") {

@@ -1,4 +1,4 @@
-# FoxiMax (Türkçe)
+# Tilkile (Türkçe)
 
 [foximax.com](https://foximax.com/) oyununun Türkçe sürümü — günlük kelime bulmacası.
 
