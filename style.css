@@ -320,6 +320,23 @@ body.kb-hidden .keyboard { display: none; }
 .key-demo.correct { background: var(--correct); }
 .key-demo.absent { background: var(--absent); }
 
+/* Nasıl oynanır örnek kelimesi (KATIR) */
+.demo-word { display: flex; gap: 5px; margin: 0 0 14px; }
+.demo-tile {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  border-radius: 2px;
+  border: 2px solid transparent;
+}
+.demo-tile.correct { background: var(--correct); border-color: var(--correct-dark); }
+.demo-tile.miss { background: var(--absent); border-color: var(--absent); }
+
 /* ---- Bulmaca bilgi satırı (başlık altında) ---- */
 .puzzle-info {
   text-align: center;
