@@ -402,9 +402,39 @@
   }
 
   function showStats() {
-    const s = getStats(state.mode);
-    $("#stats-body").innerHTML =
-      statsSummaryHTML(state.mode, s) + winRecordHTML(s, null);
+    const pno = puzzleNumber(new Date());
+    const daily = loadSaved("foximax-daily-" + pno);
+    const s = getStats("daily");
+
+    // Bugünkü (günlük) sonuç
+    let today = '<div class="today-result"><div class="stats-mode">Bugünkü Sonuç</div>';
+    if (daily && daily.status === "won") {
+      today += `<div class="today-line">Bulmaca #${pno} · <b class="win">Kazandın</b></div>`;
+      today += `<div class="today-sub muted">${daily.words.length} kelime · ${daily.wrong} yanlış</div>`;
+    } else if (daily && daily.status === "lost") {
+      today += `<div class="today-line">Bulmaca #${pno} · <b class="lose">Kaybettin</b></div>`;
+      today += `<div class="today-sub muted">${daily.words.length} kelime açıldı</div>`;
+    } else if (daily && daily.status === "playing") {
+      today += `<div class="today-line">Bulmaca #${pno} · Devam ediyor</div>`;
+      today += `<div class="today-sub muted">${daily.words.length} kelime · ${daily.wrong} yanlış</div>`;
+    } else {
+      today += `<div class="today-line">Bulmaca #${pno}</div>`;
+      today += `<div class="today-sub muted">Bugün henüz oynamadın.</div>`;
+    }
+    today += "</div>";
+
+    $("#stats-body").innerHTML = today + statsSummaryHTML("daily", s) + winRecordHTML(s, null);
+
+    // Paylaş butonu — bugünkü günlük bittiyse
+    const shareArea = $("#stats-share-area");
+    if (daily && daily.status !== "playing") {
+      shareArea.innerHTML = '<button class="primary-btn" id="stats-share-btn">Sonucu Paylaş</button>';
+      $("#stats-share-btn").onclick = () =>
+        share(buildShareTextFrom(`Tilkile #${pno}`, daily.status, daily.words.length, daily.wrong));
+    } else {
+      shareArea.innerHTML = "";
+    }
+
     openModal("#stats-modal");
   }
 
@@ -430,21 +460,20 @@
   }
 
   // ---- Paylaşım ----
+  function buildShareTextFrom(title, status, wordCount, wrong) {
+    const result = status === "won" ? "çözüldü" : "kaybedildi";
+    let bar = "";
+    const remaining = MAX_WRONG - wrong;
+    for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "■" : "□";
+    return `${title} — ${result}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
+  }
   function buildShareText() {
     const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Sınırsız)";
-    const result = state.status === "won" ? "çözüldü" : "kaybedildi";
-    let bar = "";
-    const remaining = MAX_WRONG - state.wrong;
-    for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "■" : "□";
-    return (
-      `${title} — ${result}\n` +
-      `${state.words.length} kelime · ${state.wrong}/${MAX_WRONG} yanlış\n` +
-      `${bar}`
-    );
+    return buildShareTextFrom(title, state.status, state.words.length, state.wrong);
   }
 
-  async function share() {
-    const text = buildShareText();
+  async function share(customText) {
+    const text = customText || buildShareText();
     try {
       if (navigator.share) {
         await navigator.share({ text });
@@ -557,7 +586,7 @@
       updateModeUI();
       openModal("#mode-modal");
     });
-    $("#share-btn").addEventListener("click", share);
+    $("#share-btn").addEventListener("click", () => share());
     $("#practice-again-btn").addEventListener("click", () => {
       closeModal($("#end-modal"));
       startGame("practice", { fresh: true });

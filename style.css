@@ -458,6 +458,20 @@ body.kb-hidden .keyboard { display: none; }
 
 /* ---- Stats gövdesi ve galibiyet kaydı ---- */
 .stats-body { display: block; }
+
+/* Bugünkü sonuç kartı */
+.today-result {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.today-line { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+.today-line b.win { color: var(--correct); }
+.today-line b.lose { color: var(--muted); }
+.today-sub { margin-top: 4px; }
+#stats-share-area { margin-top: 6px; }
+#stats-share-area .primary-btn { width: 100%; padding: 13px; }
 .stats-lines { margin-bottom: 16px; }
 .stats-mode {
   font-size: 0.72rem; letter-spacing: 1.2px; color: var(--muted);
