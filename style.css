@@ -116,7 +116,16 @@ body {
 }
 .lives { display: flex; align-items: center; gap: 8px; }
 .lives-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.hearts { font-size: 1.1rem; letter-spacing: 1px; }
+.hearts { display: inline-flex; align-items: center; gap: 5px; }
+.heart-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--heart-lost);
+}
+.heart-dot.on { background: var(--heart); }
+.heart-dot.off { background: var(--heart-lost); }
 
 /* ---- Board ---- */
 .board {

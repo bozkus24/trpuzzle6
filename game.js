@@ -279,13 +279,11 @@
     opts = opts || {};
     const flip = opts.flip || null;
 
-    // canlar
+    // canlar (Unicode glif yerine CSS nokta — her platformda aynı boyut)
     const remaining = MAX_WRONG - state.wrong;
     let hearts = "";
     for (let i = 0; i < MAX_WRONG; i++) {
-      hearts += i < remaining
-        ? '<span style="color:var(--heart)">●</span>'
-        : '<span style="color:var(--heart-lost)">○</span>';
+      hearts += '<span class="heart-dot ' + (i < remaining ? "on" : "off") + '"></span>';
     }
     $("#hearts").innerHTML = hearts;
 
@@ -363,6 +361,13 @@
   // ---- Modallar ----
   function openModal(id) { $(id).hidden = false; }
   function closeModal(el) { el.hidden = true; }
+
+  // Yardım penceresi: "Bir daha gösterme" yalnızca otomatik açılışta görünür
+  function openHelp(withDontShow) {
+    const ds = document.querySelector(".dont-show");
+    if (ds) ds.style.display = withDontShow ? "" : "none";
+    openModal("#help-modal");
+  }
 
   function statsSummaryHTML(mode, s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
@@ -540,7 +545,7 @@
 
   // ---- Olay bağlama ----
   function bindEvents() {
-    $("#help-btn").addEventListener("click", () => openModal("#help-modal"));
+    $("#help-btn").addEventListener("click", () => openHelp(false));
     $("#stats-btn").addEventListener("click", showStats);
     $("#settings-btn").addEventListener("click", () => {
       updateThemeUI(currentTheme());
@@ -616,7 +621,7 @@
         } catch (e) {}
       });
     }
-    if (!hideHelp) openModal("#help-modal");
+    if (!hideHelp) openHelp(true);
 
     startGame("daily");
     syncModeUI();
