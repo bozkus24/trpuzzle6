@@ -156,29 +156,41 @@ body {
   height: 58px;
   border-radius: 2px;
   background: var(--tile-empty);
-  border: 2px solid var(--absent);   /* düz görünüm, belirgin çerçeve */
-  display: grid;
-  place-items: center;
+  border: 2px solid var(--absent);   /* düz görünüm, belirgin çerçeve (sabit) */
+  position: relative;
+  overflow: hidden;
   font-size: 1.8rem;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;
   user-select: none;
 }
-.tile.revealed { background: var(--correct); border-color: var(--correct-dark); }
-.tile.miss { background: var(--absent); border-color: var(--absent); }  /* önceden denenmiş ama çıkmamış harf */
-.tile.answer { background: var(--wrong); border-color: var(--wrong-dark); }  /* kaybedince açılan cevap */
-.tile.solved-row { background: var(--correct-dark); border-color: var(--correct-dark); }
-/* harf açılırken yatay (rotateY) çevirme animasyonu */
-.tile.flip { animation: flipReveal 0.7s ease; }
+/* iç yüz: dönen kısım. Dış çerçeve sabit kalır. */
+.tile-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+.tile.revealed { border-color: var(--correct-dark); }
+.tile.revealed .tile-face { background: var(--correct); }
+.tile.miss { border-color: var(--absent); }
+.tile.miss .tile-face { background: var(--absent); }   /* önceden denenmiş ama çıkmamış harf */
+.tile.answer { border-color: var(--wrong-dark); }
+.tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
+.tile.solved-row { border-color: var(--correct-dark); }
+.tile.solved-row .tile-face { background: var(--correct-dark); }
+/* harf açılırken yatay (rotateY) çevirme — yalnız iç yüz döner */
+.tile-face.flip { animation: flipReveal 0.7s ease; }
 @keyframes flipReveal {
-  0%   { transform: rotateY(0deg)   scale(1);    }
-  45%  { transform: rotateY(90deg)  scale(1.05); }
-  55%  { transform: rotateY(90deg)  scale(1.05); }
-  100% { transform: rotateY(0deg)   scale(1);    }
+  0%   { transform: rotateY(0deg);  }
+  45%  { transform: rotateY(90deg); }
+  55%  { transform: rotateY(90deg); }
+  100% { transform: rotateY(0deg);  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .word-row.drop, .tile.flip { animation: none; }
+  .word-row.drop, .tile-face.flip { animation: none; }
 }
 @media (max-width: 400px) {
   .tile { width: 52px; height: 52px; font-size: 1.55rem; }

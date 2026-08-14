@@ -286,19 +286,23 @@
       const solved = isWordSolved(w);
       for (const ch of w) {
         const tile = document.createElement("div");
+        const face = document.createElement("div");
         const shown = state.guessed.has(ch);
         let cls = "tile";
+        let faceCls = "tile-face";
         if (shown) {
           const miss = state.absent.has(ch);
           cls += miss ? " miss" : " revealed";
           if (solved && !miss) cls += " solved-row";
-          if (flip && ch === flip && !miss) cls += " flip";
-          tile.textContent = ch;
+          if (flip && ch === flip && !miss) faceCls += " flip";
+          face.textContent = ch;
         } else if (state.status === "lost") {
           cls += " answer";  // kaybedince cevabı kırmızıyla göster
-          tile.textContent = ch;
+          face.textContent = ch;
         }
         tile.className = cls;
+        face.className = faceCls;
+        tile.appendChild(face);
         row.appendChild(tile);
       }
       board.appendChild(row);
