@@ -116,7 +116,16 @@ body {
 }
 .lives { display: flex; align-items: center; gap: 8px; }
 .lives-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.hearts { font-size: 1.1rem; letter-spacing: 1px; }
+.hearts { display: inline-flex; align-items: center; gap: 5px; }
+.heart-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--heart-lost);
+}
+.heart-dot.on { background: var(--heart); }
+.heart-dot.off { background: var(--heart-lost); }
 
 /* ---- Board ---- */
 .board {
@@ -320,6 +329,23 @@ body.kb-hidden .keyboard { display: none; }
 .key-demo.correct { background: var(--correct); }
 .key-demo.absent { background: var(--absent); }
 
+/* Nasıl oynanır örnek kelimesi (KATIR) */
+.demo-word { display: flex; gap: 5px; margin: 0 0 14px; }
+.demo-tile {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  border-radius: 2px;
+  border: 2px solid transparent;
+}
+.demo-tile.correct { background: var(--correct); border-color: var(--correct-dark); }
+.demo-tile.miss { background: var(--absent); border-color: var(--absent); }
+
 /* ---- Bulmaca bilgi satırı (başlık altında) ---- */
 .puzzle-info {
   text-align: center;
@@ -432,6 +458,20 @@ body.kb-hidden .keyboard { display: none; }
 
 /* ---- Stats gövdesi ve galibiyet kaydı ---- */
 .stats-body { display: block; }
+
+/* Bugünkü sonuç kartı */
+.today-result {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.today-line { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+.today-line b.win { color: var(--correct); }
+.today-line b.lose { color: var(--muted); }
+.today-sub { margin-top: 4px; }
+#stats-share-area { margin-top: 6px; }
+#stats-share-area .primary-btn { width: 100%; padding: 13px; }
 .stats-lines { margin-bottom: 16px; }
 .stats-mode {
   font-size: 0.72rem; letter-spacing: 1.2px; color: var(--muted);
