@@ -371,10 +371,10 @@
 
   function statsSummaryHTML(mode, s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
-    const label = mode === "daily" ? "Günlük" : "Sınırsız";
+    const label = mode === "daily" ? "GÜNLÜK" : "SINIRSIZ";
     return (
       '<div class="stats-lines">' +
-      `<div class="stats-mode">${label} İstatistikleri</div>` +
+      `<div class="stats-mode">${label} İSTATİSTİKLERİ</div>` +
       `<p>Oynanan: <b>${s.played}</b> oyun · Kazanma: <b>%${winPct}</b></p>` +
       `<p>Güncel seri: <b>${s.currentStreak}</b> · En iyi seri: <b>${s.maxStreak}</b></p>` +
       "</div>"
@@ -396,7 +396,7 @@
         `<div class="wr-bar-wrap"><div class="wr-bar${cur}" style="width:${w}%">${c}</div></div></div>`;
     }
     return (
-      '<div class="win-record"><div class="wr-title">Galibiyet Kaydı — kelime sayısı</div>' +
+      '<div class="win-record"><div class="wr-title">GALİBİYET KAYDI — KELİME SAYISI</div>' +
       `<div class="wr-rows">${rows}</div></div>`
     );
   }
@@ -407,7 +407,7 @@
     const s = getStats("daily");
 
     // Bugünkü (günlük) sonuç
-    let today = '<div class="today-result"><div class="stats-mode">Bugünkü Sonuç</div>';
+    let today = '<div class="today-result"><div class="stats-mode">BUGÜNKÜ SONUÇ</div>';
     if (daily && daily.status === "won") {
       today += `<div class="today-line">Bulmaca #${pno} · <b class="win">Kazandın</b></div>`;
       today += `<div class="today-sub muted">${daily.words.length} kelime · ${daily.wrong} yanlış</div>`;
