@@ -381,6 +381,38 @@ body.kb-hidden .keyboard { display: none; }
   color: #fff;
 }
 
+/* ---- Arşiv ızgarası ---- */
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-height: 58vh;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+.archive-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: 800;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.archive-item:hover { border-color: var(--correct); }
+.ar-no { font-size: 1.05rem; }
+.ar-date { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+.archive-item.solved { background: var(--correct); border-color: var(--correct-dark); color: #fff; }
+.archive-item.lost { background: var(--absent); border-color: var(--absent); color: #fff; }
+.archive-item.solved .ar-date,
+.archive-item.lost .ar-date { color: rgba(255, 255, 255, 0.85); }
+.archive-item.today { outline: 2px solid var(--correct); outline-offset: 1px; }
+
 /* ---- Ayarlar paneli ---- */
 .setting-row {
   display: flex;

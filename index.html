@@ -86,7 +86,7 @@
         <li>Tahtadaki <strong>tüm kelimeler tamamlandığında</strong> oyunu kazanırsınız.</li>
         <li>Tahtada <strong>8 kelime</strong> varken yanlış bir harf tahmin ederseniz oyunu kaybedersiniz.</li>
       </ul>
-      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serinizi uzatın. <strong>Sınırsız</strong> modda dilediğiniz kadar oynayabilirsiniz.</p>
+      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serinizi uzatın. <strong>Arşiv</strong> modunda geçmiş günlerin bulmacalarını oynayabilirsiniz.</p>
       <div class="help-footer">
         <label class="dont-show">
           <input type="checkbox" id="dont-show-help" />
@@ -112,13 +112,25 @@
           </svg>
           <span>Günlük oyun</span>
         </button>
-        <button class="mode-opt" data-mode="practice">
-          <svg viewBox="0 0 16 16" width="24" height="24" aria-hidden="true">
-            <path fill="currentColor" d="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/>
+        <button class="mode-opt" data-mode="archive" data-action="archive">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="5"/>
+            <path d="M4 9v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/>
+            <line x1="9.5" y1="13" x2="14.5" y2="13"/>
           </svg>
-          <span>Sınırsız mod</span>
+          <span>Arşiv</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Arşiv -->
+  <div class="modal-overlay" id="archive-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Arşiv</h2>
+      <p class="muted">Geçmiş günlük bulmacaları oyna (1 Ağustos 2026'dan bugüne).</p>
+      <div class="archive-grid" id="archive-grid"></div>
     </div>
   </div>
 
@@ -171,7 +183,7 @@
       <div class="stats-body" id="end-stats"></div>
       <div class="end-actions">
         <button class="primary-btn" id="share-btn">Sonucu Paylaş</button>
-        <button class="secondary-btn" id="practice-again-btn" hidden>Yeni Oyun</button>
+        <button class="secondary-btn" id="archive-back-btn" hidden>Arşive Dön</button>
       </div>
       <p id="countdown" class="muted countdown"></p>
     </div>

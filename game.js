@@ -27,9 +27,10 @@
       '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<rect x="3" y="4.5" width="18" height="17"/><line x1="3" y1="9.5" x2="21" y2="9.5"/>' +
       '<line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>',
-    infinity:
-      '<svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path fill="currentColor" ' +
-      'd="M5.68 5.792 7.345 7.75 5.681 9.708a2.75 2.75 0 1 1 0-3.916ZM8 6.978 6.416 5.113l-.014-.015a3.75 3.75 0 1 0 0 5.804l.014-.015L8 9.022l1.584 1.865.014.015a3.75 3.75 0 1 0 0-5.804l-.014.015zm.656.772 1.663-1.958a2.75 2.75 0 1 1 0 3.916z"/></svg>',
+    archive:
+      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="2" y="4" width="20" height="5"/><path d="M4 9v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/>' +
+      '<line x1="9.5" y1="13" x2="14.5" y2="13"/></svg>',
   };
 
   // ---- Yardımcılar ----
@@ -69,7 +70,7 @@
 
   // ---- Durum ----
   const state = {
-    mode: "daily", // daily | practice
+    mode: "daily", // daily | archive
     order: [], // karışık kelime indeksleri
     ptr: 0, // order içinde sıradaki
     words: [], // ızgaradaki kelimeler
@@ -103,8 +104,8 @@
   }
 
   // ---- Kayıt/yükleme ----
-  function dailyKey() { return "foximax-daily-" + state.puzzleNo; }
-  function practiceKey() { return "foximax-practice-current"; }
+  // Her bulmaca (bugünkü günlük veya arşivden bir gün) numarasına göre saklanır.
+  function puzzleKey(pno) { return "foximax-daily-" + pno; }
 
   function saveGame() {
     const data = {
@@ -118,10 +119,7 @@
       seed: state.seed,
     };
     try {
-      localStorage.setItem(
-        state.mode === "daily" ? dailyKey() : practiceKey(),
-        JSON.stringify(data)
-      );
+      localStorage.setItem(puzzleKey(state.puzzleNo), JSON.stringify(data));
     } catch (e) {}
   }
 
@@ -133,58 +131,48 @@
     } catch (e) { return null; }
   }
 
-  // ---- İstatistik (mod bazlı: günlük / antrenman ayrı) ----
-  function statsKey(mode) {
-    return mode === "daily" ? "foximax-stats" : "foximax-stats-practice";
-  }
-  function getStats(mode) {
+  // ---- İstatistik (yalnızca günlük; arşiv oynayışları seriyi etkilemez) ----
+  function getStats() {
     const def = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, lastWinNo: null, dist: {} };
-    const s = Object.assign(def, loadSaved(statsKey(mode)) || {});
+    const s = Object.assign(def, loadSaved("foximax-stats") || {});
     if (!s.dist) s.dist = {};
     return s;
   }
-  function saveStats(mode, s) {
-    try { localStorage.setItem(statsKey(mode), JSON.stringify(s)); } catch (e) {}
+  function saveStats(s) {
+    try { localStorage.setItem("foximax-stats", JSON.stringify(s)); } catch (e) {}
   }
-  function recordResult(mode, won, wordCount) {
-    const s = getStats(mode);
+  function recordResult(won, wordCount) {
+    const s = getStats();
     s.played += 1;
     if (won) {
       s.wins += 1;
-      if (mode === "daily") {
-        // seri: bir önceki gün kazanılmışsa uzat
-        if (s.lastWinNo === state.puzzleNo - 1) s.currentStreak += 1;
-        else s.currentStreak = 1;
-        s.lastWinNo = state.puzzleNo;
-      } else {
-        s.currentStreak += 1;
-      }
+      // seri: bir önceki gün kazanılmışsa uzat
+      if (s.lastWinNo === state.puzzleNo - 1) s.currentStreak += 1;
+      else s.currentStreak = 1;
+      s.lastWinNo = state.puzzleNo;
       if (s.currentStreak > s.maxStreak) s.maxStreak = s.currentStreak;
       s.dist[wordCount] = (s.dist[wordCount] || 0) + 1;
     } else {
       s.currentStreak = 0;
     }
-    saveStats(mode, s);
+    saveStats(s);
   }
 
   // ---- Oyun kurulumu ----
-  function startGame(mode, opts) {
+  // puzzleNo verilmezse bugünün günlük bulmacası oynanır. Geçmiş bir numara
+  // verilirse "arşiv" modunda o gün oynanır. Her ikisi de aynı deterministik
+  // tohumu ve numaraya göre kayıt anahtarını kullanır.
+  function startGame(puzzleNo, opts) {
     opts = opts || {};
-    state.mode = mode;
+    const todayNo = puzzleNumber(new Date());
+    if (puzzleNo == null) puzzleNo = todayNo;
+    state.puzzleNo = puzzleNo;
+    state.mode = puzzleNo === todayNo ? "daily" : "archive";
 
-    if (mode === "daily") {
-      state.puzzleNo = puzzleNumber(new Date());
-      const saved = loadSaved(dailyKey());
-      if (saved && !opts.fresh) { restoreFrom(saved); return; }
-      state.seed = 0x9e3779b1 ^ state.puzzleNo;
-    } else {
-      state.puzzleNo = 0;
-      const saved = loadSaved(practiceKey());
-      if (saved && !opts.fresh) { restoreFrom(saved); return; }
-      // rastgele tohum
-      state.seed = (Math.floor(Math.random() * 0xffffffff)) >>> 0;
-    }
+    const saved = loadSaved(puzzleKey(puzzleNo));
+    if (saved && !opts.fresh) { restoreFrom(saved); return; }
 
+    state.seed = 0x9e3779b1 ^ puzzleNo;
     const rng = mulberry32(state.seed);
     state.order = shuffledIndices(WORDS.length, rng);
     state.ptr = 0;
@@ -268,7 +256,8 @@
   function finishGame(won) {
     render();
     saveGame();
-    recordResult(state.mode, won, state.words.length);
+    // Yalnızca bugünün günlük bulmacası istatistikleri/seriyi etkiler.
+    if (state.mode === "daily") recordResult(won, state.words.length);
     setTimeout(() => showEndModal(won), 650);
   }
 
@@ -369,12 +358,11 @@
     openModal("#help-modal");
   }
 
-  function statsSummaryHTML(mode, s) {
+  function statsSummaryHTML(s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
-    const label = mode === "daily" ? "GÜNLÜK" : "SINIRSIZ";
     return (
       '<div class="stats-lines">' +
-      `<div class="stats-mode">${label} İSTATİSTİKLERİ</div>` +
+      '<div class="stats-mode">GENEL İSTATİSTİKLER</div>' +
       `<p>Oynanan: <b>${s.played}</b> oyun · Kazanma: <b>%${winPct}</b></p>` +
       `<p>Güncel seri: <b>${s.currentStreak}</b> · En iyi seri: <b>${s.maxStreak}</b></p>` +
       "</div>"
@@ -403,8 +391,8 @@
 
   function showStats() {
     const pno = puzzleNumber(new Date());
-    const daily = loadSaved("foximax-daily-" + pno);
-    const s = getStats("daily");
+    const daily = loadSaved(puzzleKey(pno));
+    const s = getStats();
 
     // Bugünkü (günlük) sonuç
     let today = '<div class="today-result"><div class="stats-mode">BUGÜNKÜ SONUÇ</div>';
@@ -423,7 +411,7 @@
     }
     today += "</div>";
 
-    $("#stats-body").innerHTML = today + statsSummaryHTML("daily", s) + winRecordHTML(s, null);
+    $("#stats-body").innerHTML = today + statsSummaryHTML(s) + winRecordHTML(s, null);
 
     // Paylaş butonu — bugünkü günlük bittiyse
     const shareArea = $("#stats-share-area");
@@ -439,21 +427,22 @@
   }
 
   function showEndModal(won) {
-    const s = getStats(state.mode);
+    const s = getStats();
     $("#end-title").textContent = won ? "Kazandın!" : "Oyun bitti";
     $("#end-sub").textContent = won
       ? `Aferin! ${state.words.length} kelime ve ${state.guessed.size} harf kullandın.`
       : `Tüm canlar bitti. ${state.words.length} kelime açıldı.`;
 
+    // İstatistik/dağılım yalnızca bugünkü günlükte değişir; vurgu da yalnızca onda.
     $("#end-stats").innerHTML =
-      statsSummaryHTML(state.mode, s) +
-      winRecordHTML(s, won ? state.words.length : null);
+      statsSummaryHTML(s) +
+      winRecordHTML(s, won && state.mode === "daily" ? state.words.length : null);
 
     if (state.mode === "daily") {
-      $("#practice-again-btn").hidden = true;
+      $("#archive-back-btn").hidden = true;
       startCountdown();
     } else {
-      $("#practice-again-btn").hidden = false;
+      $("#archive-back-btn").hidden = false;
       $("#countdown").textContent = "";
     }
     openModal("#end-modal");
@@ -468,8 +457,7 @@
     return `${title} — ${result}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
   }
   function buildShareText() {
-    const title = state.mode === "daily" ? `Tilkile #${state.puzzleNo}` : "Tilkile (Sınırsız)";
-    return buildShareTextFrom(title, state.status, state.words.length, state.wrong);
+    return buildShareTextFrom(`Tilkile #${state.puzzleNo}`, state.status, state.words.length, state.wrong);
   }
 
   async function share(customText) {
@@ -549,27 +537,56 @@
   }
   function updateModeButton() {
     const b = $("#mode-btn");
-    if (b) b.innerHTML = state.mode === "daily" ? ICONS.calendar : ICONS.infinity;
+    if (b) b.innerHTML = state.mode === "daily" ? ICONS.calendar : ICONS.archive;
+  }
+  // Bir bulmaca numarasının takvim tarihi (1 Ağustos 2026 = #1)
+  function dateForPuzzle(pno) {
+    return new Date(LAUNCH.getFullYear(), LAUNCH.getMonth(), LAUNCH.getDate() + (pno - 1));
   }
   function updateInfoLine() {
     const el = $("#puzzle-info");
     if (!el) return;
-    if (state.mode === "daily") {
-      const d = new Date();
-      el.textContent =
-        `Bulmaca #${state.puzzleNo} · Günlük · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
-    } else {
-      el.textContent = "Sınırsız mod · rastgele bulmaca";
-    }
+    const d = dateForPuzzle(state.puzzleNo);
+    const label = state.mode === "daily" ? "Günlük" : "Arşiv";
+    el.textContent = `Bulmaca #${state.puzzleNo} · ${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
   }
   function syncModeUI() {
     updateModeUI();
     updateModeButton();
     updateInfoLine();
   }
-  function setMode(mode) {
-    startGame(mode);
+  function setMode() {
+    startGame(); // bugünün günlük bulmacası
     syncModeUI();
+  }
+
+  // ---- Arşiv (geçmiş günlük bulmacalar) ----
+  function showArchive() {
+    const todayNo = puzzleNumber(new Date());
+    const grid = $("#archive-grid");
+    let html = "";
+    for (let n = todayNo; n >= 1; n--) {
+      const saved = loadSaved(puzzleKey(n));
+      let cls = "archive-item";
+      if (saved && saved.status === "won") cls += " solved";
+      else if (saved && saved.status === "lost") cls += " lost";
+      if (n === todayNo) cls += " today";
+      const d = dateForPuzzle(n);
+      html +=
+        `<button class="${cls}" data-pno="${n}">` +
+        `<span class="ar-no">#${n}</span>` +
+        `<span class="ar-date">${d.getDate()} ${TR_MONTHS[d.getMonth()].slice(0, 3)}</span></button>`;
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll(".archive-item").forEach((b) =>
+      b.addEventListener("click", () => {
+        startGame(parseInt(b.dataset.pno, 10));
+        syncModeUI();
+        closeModal($("#archive-modal"));
+        closeModal($("#mode-modal"));
+      })
+    );
+    openModal("#archive-modal");
   }
 
   // ---- Olay bağlama ----
@@ -587,9 +604,9 @@
       openModal("#mode-modal");
     });
     $("#share-btn").addEventListener("click", () => share());
-    $("#practice-again-btn").addEventListener("click", () => {
+    $("#archive-back-btn").addEventListener("click", () => {
       closeModal($("#end-modal"));
-      startGame("practice", { fresh: true });
+      showArchive();
     });
 
     $("#theme-select").addEventListener("change", (e) => setTheme(e.target.value));
@@ -600,8 +617,13 @@
     });
     document.querySelectorAll(".mode-opt").forEach((t) =>
       t.addEventListener("click", () => {
-        setMode(t.dataset.mode);
-        closeModal($("#mode-modal"));
+        if (t.dataset.action === "archive") {
+          closeModal($("#mode-modal"));
+          showArchive();
+        } else {
+          setMode();
+          closeModal($("#mode-modal"));
+        }
       })
     );
 
@@ -652,7 +674,7 @@
     }
     if (!hideHelp) openHelp(true);
 
-    startGame("daily");
+    startGame(); // bugünün günlük bulmacası
     syncModeUI();
   }
 
