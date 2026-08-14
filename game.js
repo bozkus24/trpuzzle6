@@ -295,7 +295,7 @@
           if (flip && ch === flip && !miss) cls += " flip";
           tile.textContent = ch;
         } else if (state.status === "lost") {
-          cls += " miss";
+          cls += " answer";  // kaybedince cevabı kırmızıyla göster
           tile.textContent = ch;
         }
         tile.className = cls;

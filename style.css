@@ -11,6 +11,8 @@
   --correct: #6aaa64;   /* bilinen harf: yeşil */
   --correct-dark: #558a4f;
   --absent: #9fa39c;    /* bilinmeyen harf: nötr gri */
+  --wrong: #c0492b;     /* kaybedince açılan cevap: kırmızı */
+  --wrong-dark: #9a3821;
   --key-bg: #e5e8e0;
   --key-text: #262b24;
   --accent: #6aaa64;
@@ -32,6 +34,8 @@
   --correct: #6aaa64;
   --correct-dark: #4f8148;
   --absent: #5c6157;
+  --wrong: #c0492b;
+  --wrong-dark: #93382c;
   --key-bg: #333930;
   --key-text: #eef1ea;
   --accent: #6aaa64;
@@ -150,9 +154,9 @@ body {
 .tile {
   width: 58px;
   height: 58px;
-  border-radius: 2px;
+  border-radius: 3px;
   background: var(--tile-empty);
-  border: 2px solid var(--tile-hidden);
+  border: 1px solid var(--tile-hidden);
   display: grid;
   place-items: center;
   font-size: 1.8rem;
@@ -160,9 +164,14 @@ body {
   color: #fff;
   text-transform: uppercase;
   user-select: none;
+  /* hafif üç boyutlu (kabartma) görünüm */
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22),
+              inset 0 -4px 0 rgba(0, 0, 0, 0.20),
+              0 2px 2px rgba(0, 0, 0, 0.18);
 }
 .tile.revealed { background: var(--correct); border-color: var(--correct-dark); }
 .tile.miss { background: var(--absent); border-color: var(--absent); }  /* önceden denenmiş ama çıkmamış harf */
+.tile.answer { background: var(--wrong); border-color: var(--wrong-dark); }  /* kaybedince açılan cevap */
 .tile.solved-row { background: var(--correct-dark); border-color: var(--correct-dark); }
 /* harf açılırken yatay (rotateY) çevirme animasyonu */
 .tile.flip { animation: flipReveal 0.7s ease; }
@@ -340,8 +349,10 @@ body.kb-hidden .keyboard { display: none; }
   color: #fff;
   text-transform: uppercase;
   font-size: 1.05rem;
-  border-radius: 2px;
-  border: 2px solid transparent;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+              inset 0 -3px 0 rgba(0, 0, 0, 0.18);
 }
 .demo-tile.correct { background: var(--correct); border-color: var(--correct-dark); }
 .demo-tile.miss { background: var(--absent); border-color: var(--absent); }
