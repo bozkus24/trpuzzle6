@@ -273,6 +273,7 @@ body.kb-hidden .keyboard { display: none; }
 @keyframes rise { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .modal h2 { margin-bottom: 14px; font-size: 1.35rem; }
 .modal h2 .ttl-ico { vertical-align: -0.2em; }
+#help-modal h2 { text-align: center; }
 .modal p { margin-bottom: 12px; line-height: 1.5; }
 .modal ul { margin: 0 0 14px 20px; line-height: 1.7; }
 .modal li { margin-bottom: 4px; }
