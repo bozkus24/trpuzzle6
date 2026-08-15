@@ -551,8 +551,8 @@
     const el = $("#puzzle-info");
     if (!el) return;
     const d = dateForPuzzle(state.puzzleNo);
-    const label = state.mode === "daily" ? "Günlük" : "Arşiv";
-    el.textContent = `Bulmaca #${state.puzzleNo} · ${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
+    const label = state.mode === "daily" ? "Günün Oyunu" : "Arşiv";
+    el.textContent = `${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
   }
   function syncModeUI() {
     updateModeUI();
