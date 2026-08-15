@@ -552,7 +552,7 @@
     if (!el) return;
     const d = dateForPuzzle(state.puzzleNo);
     const label = state.mode === "daily" ? "Günün Oyunu" : "Arşiv";
-    el.textContent = `${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
+    el.textContent = `${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
   function syncModeUI() {
     updateModeUI();
