@@ -268,11 +268,11 @@
     opts = opts || {};
     const flip = opts.flip || null;
 
-    // canlar (Unicode glif yerine CSS nokta — her platformda aynı boyut)
+    // canlar (kullanıcının kalp görseli; dolu = renkli, giden = soluk)
     const remaining = MAX_WRONG - state.wrong;
     let hearts = "";
     for (let i = 0; i < MAX_WRONG; i++) {
-      hearts += '<span class="heart-dot ' + (i < remaining ? "on" : "off") + '"></span>';
+      hearts += '<img class="heart' + (i < remaining ? "" : " lost") + '" src="can.png" alt="" />';
     }
     $("#hearts").innerHTML = hearts;
 
