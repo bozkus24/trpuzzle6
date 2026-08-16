@@ -231,7 +231,7 @@ body {
   min-width: 0;
   height: 66px;
   border: none;
-  border-radius: 10px;
+  border-radius: 2px;
   background: var(--key-bg);
   color: var(--key-text);
   font-size: 1.2rem;
@@ -256,11 +256,11 @@ body.kb-hidden .keyboard { display: none; }
   .key { height: 56px; }
 }
 @media (max-height: 680px) {
-  .key { height: 48px; font-size: 1.05rem; border-radius: 8px; }
+  .key { height: 48px; font-size: 1.05rem; }
   .keyboard { gap: 7px; }
 }
 @media (max-height: 600px) {
-  .key { height: 42px; font-size: 0.95rem; border-radius: 7px; }
+  .key { height: 42px; font-size: 0.95rem; }
   .keyboard { gap: 5px; padding-top: 4px; }
 }
 
