@@ -87,8 +87,12 @@ body {
   display: block;
   filter: drop-shadow(0 1px 1px var(--shadow));
 }
-.brand .fox-pixel { display: inline-flex; }
-.brand .fox-pixel svg { display: block; height: 30px; width: auto; }
+.brand .fox-pic {
+  height: 38px;
+  width: auto;
+  display: block;
+  image-rendering: pixelated;   /* pixel-art kenarları net kalsın */
+}
 .icon-btn svg { display: block; }
 .topbar-right { display: flex; gap: 6px; }
 .icon-btn {
