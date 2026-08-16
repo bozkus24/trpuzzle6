@@ -185,7 +185,7 @@ body {
 .tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
 .tile.solved-row { border-color: var(--correct-dark); }
 .tile.solved-row .tile-face { background: var(--correct-dark); }
-/* harf açılırken yatay (rotateY) çevirme — yalnız iç yüz döner */
+/* harf açılırken yatay (rotateY) çevirme, yalnız iç yüz döner */
 .tile-face.flip { animation: flipReveal 0.7s ease; }
 @keyframes flipReveal {
   0%   { transform: rotateY(0deg);  }

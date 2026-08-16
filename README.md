@@ -1,6 +1,6 @@
 # Tilkile (Türkçe)
 
-[foximax.com](https://foximax.com/) oyununun Türkçe sürümü — günlük kelime bulmacası.
+[foximax.com](https://foximax.com/) oyununun Türkçe sürümü, günlük kelime bulmacası.
 
 Klasik harf tahmin oyununa kurnaz bir kıvrım getirir: gizli kelimeyi harfleri
 tek tek tahmin ederek çözersin. Ama tahmin ettiğin harf kelimede **yoksa**,
@@ -10,8 +10,8 @@ yanlışla** çözmek.
 
 ## Özellikler
 
-- **Günlük mod** — herkese aynı bulmaca, deterministik (tarihe göre). Serini uzat.
-- **Antrenman modu** — sınırsız rastgele oyun, tekrar oyna ve paylaş.
+- **Günlük mod**: herkese aynı bulmaca, deterministik (tarihe göre). Serini uzat.
+- **Antrenman modu**: sınırsız rastgele oyun, tekrar oyna ve paylaş.
 - Büyüyen ızgara mekaniği, canlar, oyun sonu istatistikleri.
 - **Galibiyet Kaydı** grafiği (kaç kelimeyle kazanıldığının dağılımı), günlük ve
   antrenman için ayrı tutulur.
@@ -32,10 +32,10 @@ klavyeden harfleri tahmin et.
 
 ## Dosyalar
 
-- `index.html` — sayfa yapısı
-- `style.css` — tema ve arayüz
-- `game.js` — oyun mantığı (günlük/antrenman, tahmin, streak, paylaşım)
-- `words.js` — 5 harfli Türkçe kelime listesi (5.521 kelime)
+- `index.html`: sayfa yapısı
+- `style.css`: tema ve arayüz
+- `game.js`: oyun mantığı (günlük/antrenman, tahmin, streak, paylaşım)
+- `words.js`: 5 harfli Türkçe kelime listesi (5.521 kelime)
 
 ## Kelime listesi kaynağı
 

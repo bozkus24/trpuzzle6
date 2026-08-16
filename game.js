@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Tilkile — Türkçe günlük kelime bulmacası
+   Tilkile: Türkçe günlük kelime bulmacası
    Mekanik: harfleri tek tek tahmin et. Harf kelimede varsa açığa çıkar;
    yoksa ızgaraya yeni bir kelime eklenir ve bir can gider. 8 yanlışta oyun biter.
    ========================================================================== */
@@ -388,7 +388,7 @@
         `<div class="wr-bar-wrap"><div class="wr-bar${cur}" style="width:${w}%">${c}</div></div></div>`;
     }
     return (
-      '<div class="win-record"><div class="wr-title">GALİBİYET KAYDI — KELİME SAYISI</div>' +
+      '<div class="win-record"><div class="wr-title">GALİBİYET KAYDI · KELİME SAYISI</div>' +
       `<div class="wr-rows">${rows}</div></div>`
     );
   }
@@ -417,7 +417,7 @@
 
     $("#stats-body").innerHTML = today + statsSummaryHTML(s) + winRecordHTML(s, null);
 
-    // Paylaş butonu — bugünkü günlük bittiyse
+    // Paylaş butonu: bugünkü günlük bittiyse
     const shareArea = $("#stats-share-area");
     if (daily && daily.status !== "playing") {
       shareArea.innerHTML = '<button class="primary-btn" id="stats-share-btn">Sonucu Paylaş</button>';
@@ -458,7 +458,7 @@
     let bar = "";
     const remaining = MAX_WRONG - wrong;
     for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "■" : "□";
-    return `${title} — ${result}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
+    return `${title} · ${result}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
   }
   function buildShareText() {
     return buildShareTextFrom(`Tilkile #${state.puzzleNo}`, state.status, state.words.length, state.wrong);
