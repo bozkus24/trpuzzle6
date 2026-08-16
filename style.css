@@ -217,24 +217,24 @@ body {
 .keyboard {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 9px;
   padding-top: 6px;
 }
 .kb-row {
   display: flex;
-  gap: 5px;
+  gap: 7px;
   justify-content: center;
 }
 .key {
   flex: 1;
-  max-width: 44px;
+  max-width: 52px;
   min-width: 0;
-  height: 60px;
+  height: 66px;
   border: none;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--key-bg);
   color: var(--key-text);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
@@ -253,14 +253,14 @@ body.kb-hidden .keyboard { display: none; }
 }
 /* kısa ekran (yükseklik az): klavyenin ekrandan taşmaması için küçült */
 @media (max-height: 760px) {
-  .key { height: 52px; }
+  .key { height: 56px; }
 }
 @media (max-height: 680px) {
-  .key { height: 46px; font-size: 1rem; }
-  .keyboard { gap: 6px; }
+  .key { height: 48px; font-size: 1.05rem; border-radius: 8px; }
+  .keyboard { gap: 7px; }
 }
 @media (max-height: 600px) {
-  .key { height: 40px; font-size: 0.9rem; }
+  .key { height: 42px; font-size: 0.95rem; border-radius: 7px; }
   .keyboard { gap: 5px; padding-top: 4px; }
 }
 
