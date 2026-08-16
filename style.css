@@ -14,11 +14,8 @@
   --absent: #9fa39c;    /* bilinmeyen harf: nötr gri */
   --wrong: #c0492b;     /* kaybedince açılan cevap: kırmızı */
   --wrong-dark: #9a3821;
-  /* kutucuk çerçeveleri: her durumda net görünür (dolgudan belirgin koyu) */
-  --tile-border-empty: #b7bcb0;
-  --tile-border-green: #3f7a38;
-  --tile-border-gray: #6b6f68;
-  --tile-border-red: #85301d;
+  /* kutucuk çerçevesi: renkten bağımsız, her durumda aynı gri */
+  --tile-border: #a7aca1;
   --key-bg: #e5e8e0;
   --key-text: #262b24;
   --accent: #6aaa64;
@@ -42,10 +39,7 @@
   --absent: #5c6157;
   --wrong: #c0492b;
   --wrong-dark: #93382c;
-  --tile-border-empty: #454b3c;
-  --tile-border-green: #2c5a27;
-  --tile-border-gray: #868b80;
-  --tile-border-red: #8a2c1b;
+  --tile-border: #565b4f;
   --key-bg: #333930;
   --key-text: #eef1ea;
   --accent: #6aaa64;
@@ -171,7 +165,7 @@ body {
   height: 58px;
   border-radius: 2px;
   background: var(--tile-empty);
-  border: 3px solid var(--tile-border-empty);   /* düz görünüm, belirgin çerçeve (sabit) */
+  border: 2px solid var(--tile-border);   /* renkten bağımsız sabit gri çerçeve */
   position: relative;
   overflow: hidden;
   font-size: 1.8rem;
@@ -188,13 +182,10 @@ body {
   place-items: center;
   background: transparent;
 }
-.tile.revealed { border-color: var(--tile-border-green); }
+/* çerçeve her durumda gri kalır; yalnız iç yüz renklenir */
 .tile.revealed .tile-face { background: var(--correct); }
-.tile.miss { border-color: var(--tile-border-gray); }
 .tile.miss .tile-face { background: var(--absent); }   /* önceden denenmiş ama çıkmamış harf */
-.tile.answer { border-color: var(--tile-border-red); }
 .tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
-.tile.solved-row { border-color: var(--tile-border-green); }
 .tile.solved-row .tile-face { background: var(--correct-dark); }
 /* harf açılırken yatay (rotateY) çevirme, yalnız iç yüz döner */
 .tile-face.flip { animation: flipReveal 0.7s ease; }
