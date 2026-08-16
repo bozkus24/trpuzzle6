@@ -435,7 +435,9 @@ body.kb-hidden .keyboard { display: none; }
 .archive-item.lost { background: var(--absent); border-color: var(--absent); color: #fff; }
 .archive-item.solved .ar-date,
 .archive-item.lost .ar-date { color: rgba(255, 255, 255, 0.85); }
-.archive-item.today { outline: 2px solid var(--correct); outline-offset: 1px; }
+.archive-item.today { border-width: 2px; border-color: var(--correct); }
+.archive-item.today.solved,
+.archive-item.today.lost { border-color: #fff; }
 
 /* ---- Ayarlar paneli ---- */
 .setting-row {
