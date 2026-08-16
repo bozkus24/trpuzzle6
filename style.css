@@ -14,6 +14,11 @@
   --absent: #9fa39c;    /* bilinmeyen harf: nötr gri */
   --wrong: #c0492b;     /* kaybedince açılan cevap: kırmızı */
   --wrong-dark: #9a3821;
+  /* kutucuk çerçeveleri: her durumda net görünür (dolgudan belirgin koyu) */
+  --tile-border-empty: #b7bcb0;
+  --tile-border-green: #3f7a38;
+  --tile-border-gray: #6b6f68;
+  --tile-border-red: #85301d;
   --key-bg: #e5e8e0;
   --key-text: #262b24;
   --accent: #6aaa64;
@@ -37,6 +42,10 @@
   --absent: #5c6157;
   --wrong: #c0492b;
   --wrong-dark: #93382c;
+  --tile-border-empty: #454b3c;
+  --tile-border-green: #2c5a27;
+  --tile-border-gray: #868b80;
+  --tile-border-red: #8a2c1b;
   --key-bg: #333930;
   --key-text: #eef1ea;
   --accent: #6aaa64;
@@ -162,7 +171,7 @@ body {
   height: 58px;
   border-radius: 2px;
   background: var(--tile-empty);
-  border: 2px solid var(--absent);   /* düz görünüm, belirgin çerçeve (sabit) */
+  border: 3px solid var(--tile-border-empty);   /* düz görünüm, belirgin çerçeve (sabit) */
   position: relative;
   overflow: hidden;
   font-size: 1.8rem;
@@ -179,13 +188,13 @@ body {
   place-items: center;
   background: transparent;
 }
-.tile.revealed { border-color: var(--correct-dark); }
+.tile.revealed { border-color: var(--tile-border-green); }
 .tile.revealed .tile-face { background: var(--correct); }
-.tile.miss { border-color: var(--absent); }
+.tile.miss { border-color: var(--tile-border-gray); }
 .tile.miss .tile-face { background: var(--absent); }   /* önceden denenmiş ama çıkmamış harf */
-.tile.answer { border-color: var(--wrong-dark); }
+.tile.answer { border-color: var(--tile-border-red); }
 .tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
-.tile.solved-row { border-color: var(--correct-dark); }
+.tile.solved-row { border-color: var(--tile-border-green); }
 .tile.solved-row .tile-face { background: var(--correct-dark); }
 /* harf açılırken yatay (rotateY) çevirme, yalnız iç yüz döner */
 .tile-face.flip { animation: flipReveal 0.7s ease; }
@@ -227,14 +236,14 @@ body {
 }
 .key {
   flex: 1;
-  max-width: 42px;
+  max-width: 44px;
   min-width: 0;
-  height: 50px;
+  height: 60px;
   border: none;
   border-radius: 2px;
   background: var(--key-bg);
   color: var(--key-text);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
@@ -247,8 +256,21 @@ body {
 .key.absent { background: var(--absent); color: #fff; opacity: 0.85; }
 .key:disabled { cursor: default; }
 body.kb-hidden .keyboard { display: none; }
+/* dar ekran: tuşları daralt ama yüksekliği koru */
 @media (max-width: 360px) {
-  .key { height: 46px; font-size: 0.9rem; }
+  .key { font-size: 1rem; }
+}
+/* kısa ekran (yükseklik az): klavyenin ekrandan taşmaması için küçült */
+@media (max-height: 760px) {
+  .key { height: 52px; }
+}
+@media (max-height: 680px) {
+  .key { height: 46px; font-size: 1rem; }
+  .keyboard { gap: 6px; }
+}
+@media (max-height: 600px) {
+  .key { height: 40px; font-size: 0.9rem; }
+  .keyboard { gap: 5px; padding-top: 4px; }
 }
 
 /* ---- Modals ---- */
