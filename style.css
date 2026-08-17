@@ -92,12 +92,6 @@ body {
   display: block;
   filter: drop-shadow(0 1px 1px var(--shadow));
 }
-.brand .fox-pic {
-  height: 40px;
-  width: auto;
-  display: block;
-  image-rendering: pixelated;   /* pixel-art kenarları net kalsın */
-}
 .icon-btn svg { display: block; }
 .topbar-right { display: flex; gap: 6px; }
 .icon-btn {
