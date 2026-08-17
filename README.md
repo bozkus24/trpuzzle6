@@ -35,17 +35,24 @@ klavyeden harfleri tahmin et.
 - `index.html`: sayfa yapısı
 - `style.css`: tema ve arayüz
 - `game.js`: oyun mantığı (günlük/antrenman, tahmin, streak, paylaşım)
-- `words.js`: 5 harfli Türkçe kelime listesi (2.788 kelime)
+- `words.js`: oyunun sorduğu cevap havuzu, 5 harfli (2.788 kelime)
+- `cevaplar.txt`: cevap havuzu kaynağı (2.788 kelime)
+- `kelimehavuzu.txt`: kabul edilen tüm geçerli tahminler (5.585 kelime)
 
-## Kelime listesi kaynağı
+## Kelime listeleri
 
-Soru havuzu, kullanıcı tarafından sağlanan kelime listesinden **yalnızca
-yanında `.` işareti bulunan** kelimelerden oluşturulur (2.788 adet 5 harfli
-Türkçe kelime). Bu kelimeler **`kelimehavuzu.txt`** dosyasına yazılır; ardından
-Türkçe kurallara göre büyük harfe çevrilerek (`i→İ`, `ı→I`) `words.js` üretilir.
+İki liste vardır:
 
-Kelime havuzunu güncellemek için `kelimehavuzu.txt` dosyasını düzenleyip
-`words.js`'i yeniden üretmen yeterli.
+- **`kelimehavuzu.txt`** — *kabul edilen tahminler*: geçerli sayılan tüm 5
+  harfli Türkçe kelimeler (5.585 adet).
+- **`cevaplar.txt`** — *cevaplar*: oyunun tahtaya çıkarabileceği / sorabileceği
+  kelimeler (2.788 adet). Bu liste kabul edilen tahminlerin bir alt kümesidir.
+
+Oyunun kullandığı `words.js`, **`cevaplar.txt`** dosyasından üretilir;
+kelimeler Türkçe kurallara göre büyük harfe çevrilir (`i→İ`, `ı→I`).
+
+Havuzu güncellemek için ilgili `.txt` dosyasını düzenleyip `words.js`'i
+`cevaplar.txt`'ten yeniden üretmen yeterli.
 
 ## Başlık fontu
 
