@@ -87,9 +87,8 @@ body {
   filter: drop-shadow(0 1px 1px var(--shadow));
   transform: translateY(2px);   /* küpü bir tık aşağı al, wordmark ile hizala */
 }
-/* wordmark: tilki + yazı iki ayrı katman, üst üste bindirilir */
+/* wordmark: tema başına tek düz görsel (açık: siyah yazı, koyu: beyaz yazı; tilki ikisinde de aynı) */
 .brand .brand-logo {
-  position: relative;
   display: inline-block;
   height: 42px;
   transform: translateY(-5px);  /* wordmark'taki yazıyı küple hizala */
@@ -100,9 +99,9 @@ body {
   display: block;
   image-rendering: pixelated;   /* piksel kenarlar net kalsın */
 }
-.brand .bl-text { position: absolute; top: 0; left: 0; }
-/* koyu temada yalnız yazı katmanı ters çevrilir (siyah->beyaz); tilki renkli kalır */
-:root[data-theme="dark"] .brand .bl-text { filter: invert(1); }
+.brand .bl-dark { display: none; }
+:root[data-theme="dark"] .brand .bl-light { display: none; }
+:root[data-theme="dark"] .brand .bl-dark { display: block; }
 /* dar ekranda başlık taşmasın */
 @media (max-width: 400px) {
   .brand { gap: 6px; }
