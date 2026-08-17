@@ -99,9 +99,9 @@ body {
   display: block;
   image-rendering: pixelated;   /* piksel kenarlar net kalsın */
 }
-.brand .bl-dark { display: none; }
-:root[data-theme="dark"] .brand .bl-light { display: none; }
-:root[data-theme="dark"] .brand .bl-dark { display: block; }
+.brand .brand-logo img.bl-dark { display: none; }
+:root[data-theme="dark"] .brand .brand-logo img.bl-light { display: none; }
+:root[data-theme="dark"] .brand .brand-logo img.bl-dark { display: block; }
 /* dar ekranda başlık taşmasın */
 @media (max-width: 400px) {
   .brand { gap: 6px; }
