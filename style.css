@@ -91,6 +91,7 @@ body {
   width: auto;
   display: block;
   image-rendering: pixelated;   /* piksel kenarlar net kalsın */
+  transform: translateY(-5px);  /* wordmark'taki yazıyı küple hizala */
 }
 /* koyu temada siyah yazı görünmez; akıllı ters çevirme ile görünür yap */
 :root[data-theme="dark"] .brand .brand-logo {
