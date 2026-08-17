@@ -78,6 +78,13 @@ body {
 .brand {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+.brand .logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 1px 1px var(--shadow));
 }
 .brand .brand-logo {
   height: 42px;
@@ -90,10 +97,13 @@ body {
   filter: invert(1) hue-rotate(180deg);
 }
 /* dar ekranda başlık taşmasın */
-@media (max-width: 360px) {
+@media (max-width: 400px) {
+  .brand { gap: 6px; }
+  .brand .logo { height: 34px; }
   .brand .brand-logo { height: 36px; }
 }
-@media (max-width: 320px) {
+@media (max-width: 340px) {
+  .brand .logo { height: 28px; }
   .brand .brand-logo { height: 30px; }
 }
 .icon-btn svg { display: block; }
