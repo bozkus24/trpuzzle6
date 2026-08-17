@@ -46,3 +46,11 @@ kelimeler Türkçe kurallara göre büyük harfe çevrilerek (`i→İ`, `ı→I`
 
 Kelime havuzunu güncellemek için `kelimehavuzu.txt` dosyasını düzenleyip
 `words.js`'i yeniden üretmen yeterli.
+
+## Başlık fontu
+
+Başlık (**TİLKİLE**) için *Megamax Jonathan Too* (heaven castro, Freeware)
+kullanılır. Font Türkçe **İ** harfini içermediğinden, fontun kendi piksel
+ızgarasında (I gövdesi + nokta) bir **İ** glifi üretilip eklenmiş; ardından
+gerekli harflere subset'lenip `style.css` içine base64 gömülmüştür. Böylece
+her cihazda aynı görünür.
