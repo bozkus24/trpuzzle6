@@ -1,6 +1,6 @@
 # Tilkile (Türkçe)
 
-[foximax.com](https://foximax.com/) oyununun Türkçe sürümü — günlük kelime bulmacası.
+[foximax.com](https://foximax.com/) oyununun Türkçe sürümü, günlük kelime bulmacası.
 
 Klasik harf tahmin oyununa kurnaz bir kıvrım getirir: gizli kelimeyi harfleri
 tek tek tahmin ederek çözersin. Ama tahmin ettiğin harf kelimede **yoksa**,
@@ -10,8 +10,8 @@ yanlışla** çözmek.
 
 ## Özellikler
 
-- **Günlük mod** — herkese aynı bulmaca, deterministik (tarihe göre). Serini uzat.
-- **Antrenman modu** — sınırsız rastgele oyun, tekrar oyna ve paylaş.
+- **Günlük mod**: herkese aynı bulmaca, deterministik (tarihe göre). Serini uzat.
+- **Antrenman modu**: sınırsız rastgele oyun, tekrar oyna ve paylaş.
 - Büyüyen ızgara mekaniği, canlar, oyun sonu istatistikleri.
 - **Galibiyet Kaydı** grafiği (kaç kelimeyle kazanıldığının dağılımı), günlük ve
   antrenman için ayrı tutulur.
@@ -32,17 +32,32 @@ klavyeden harfleri tahmin et.
 
 ## Dosyalar
 
-- `index.html` — sayfa yapısı
-- `style.css` — tema ve arayüz
-- `game.js` — oyun mantığı (günlük/antrenman, tahmin, streak, paylaşım)
-- `words.js` — 5 harfli Türkçe kelime listesi (5.521 kelime)
+- `index.html`: sayfa yapısı
+- `style.css`: tema ve arayüz
+- `game.js`: oyun mantığı (günlük/antrenman, tahmin, streak, paylaşım)
+- `words.js`: oyunun sorduğu cevap havuzu, 5 harfli (2.788 kelime)
+- `cevaplar.txt`: cevap havuzu kaynağı (2.788 kelime)
+- `kelimehavuzu.txt`: kabul edilen tüm geçerli tahminler (5.585 kelime)
 
-## Kelime listesi kaynağı
+## Kelime listeleri
 
-Kelimeler doğrudan repodaki **`kelimehavuzu.txt`** dosyasından alınır (5.585
-adet 5 harfli Türkçe kelime). Herhangi bir dış doğrulama yapılmaz; dosyadaki
-kelimeler Türkçe kurallara göre büyük harfe çevrilerek (`i→İ`, `ı→I`)
-`words.js` üretilir.
+İki liste vardır:
 
-Kelime havuzunu güncellemek için `kelimehavuzu.txt` dosyasını düzenleyip
-`words.js`'i yeniden üretmen yeterli.
+- **`kelimehavuzu.txt`** — *kabul edilen tahminler*: geçerli sayılan tüm 5
+  harfli Türkçe kelimeler (5.585 adet).
+- **`cevaplar.txt`** — *cevaplar*: oyunun tahtaya çıkarabileceği / sorabileceği
+  kelimeler (2.788 adet). Bu liste kabul edilen tahminlerin bir alt kümesidir.
+
+Oyunun kullandığı `words.js`, **`cevaplar.txt`** dosyasından üretilir;
+kelimeler Türkçe kurallara göre büyük harfe çevrilir (`i→İ`, `ı→I`).
+
+Havuzu güncellemek için ilgili `.txt` dosyasını düzenleyip `words.js`'i
+`cevaplar.txt`'ten yeniden üretmen yeterli.
+
+## Başlık fontu
+
+Başlık (**TİLKİLE**) için *Megamax Jonathan Too* (heaven castro, Freeware)
+kullanılır. Font Türkçe **İ** harfini içermediğinden, fontun kendi piksel
+ızgarasında (I gövdesi + nokta) bir **İ** glifi üretilip eklenmiş; ardından
+gerekli harflere subset'lenip `style.css` içine base64 gömülmüştür. Böylece
+her cihazda aynı görünür.
