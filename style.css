@@ -87,26 +87,33 @@ body {
   filter: drop-shadow(0 1px 1px var(--shadow));
   transform: translateY(2px);   /* küpü bir tık aşağı al, wordmark ile hizala */
 }
+/* wordmark: tilki + yazı iki ayrı katman, üst üste bindirilir */
 .brand .brand-logo {
+  position: relative;
+  display: inline-block;
+  height: 42px;
+  transform: translateY(-5px);  /* wordmark'taki yazıyı küple hizala */
+}
+.brand .brand-logo img {
   height: 42px;
   width: auto;
   display: block;
   image-rendering: pixelated;   /* piksel kenarlar net kalsın */
-  transform: translateY(-5px);  /* wordmark'taki yazıyı küple hizala */
 }
-/* koyu temada siyah yazı görünmez; akıllı ters çevirme ile görünür yap */
-:root[data-theme="dark"] .brand .brand-logo {
-  filter: invert(1) hue-rotate(180deg);
-}
+.brand .bl-text { position: absolute; top: 0; left: 0; }
+/* koyu temada yalnız yazı katmanı ters çevrilir (siyah->beyaz); tilki renkli kalır */
+:root[data-theme="dark"] .brand .bl-text { filter: invert(1); }
 /* dar ekranda başlık taşmasın */
 @media (max-width: 400px) {
   .brand { gap: 6px; }
   .brand .logo { height: 34px; }
   .brand .brand-logo { height: 36px; }
+  .brand .brand-logo img { height: 36px; }
 }
 @media (max-width: 340px) {
   .brand .logo { height: 28px; }
   .brand .brand-logo { height: 30px; }
+  .brand .brand-logo img { height: 30px; }
 }
 .icon-btn svg { display: block; }
 .topbar-right { display: flex; gap: 6px; }
