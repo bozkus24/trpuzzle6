@@ -632,3 +632,8 @@ body.kb-hidden .keyboard { display: none; }
   animation: fade 0.2s ease;
 }
 .toast[hidden] { display: none; }
+
+/* Masaüstünde "Nasıl oynanır" penceresi biraz daha geniş (mobil aynı kalır) */
+@media (min-width: 760px) {
+  #help-modal .modal { max-width: 600px; }
+}
