@@ -141,12 +141,26 @@ body {
 .icon-btn:hover { background: var(--key-bg); }
 #help-btn { font-weight: 800; }
 
+/* ---- Ust katman (oyun alani): mobilde tam ekran yuksekligi ---- */
+.app-fold {
+  display: flex;
+  flex-direction: column;
+}
+/* mobilde ust katman ekrani doldurur; klavye alt kenara yaslanir,
+   bilgi bolumu (tp-bilgi) alta kayar. Masaustunde mevcut davranis korunur. */
+@media (max-width: 640px) {
+  .app-fold { min-height: 100svh; min-height: 100dvh; }
+}
+
 /* ---- Game area ---- */
 .game {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 14px 14px;
+}
+@media (max-width: 640px) {
+  .game { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
 }
 .status-row {
   display: flex;
