@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#e8862a" />
+  <title>Tilkile · Günlük Kelime Bulmacası</title>
+<link rel="canonical" href="https://trpuzzle.com/tilkile/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TrPuzzle">
+<meta property="og:title" content="Tilkile — Günlük Kelime Bulmacası">
+<meta property="og:description" content="Harfleri tahmin et, gizli kelimeleri çöz — ama her yanlış tahmin bulmacayı büyütür! Günlük Türkçe kelime oyunu.">
+<meta property="og:url" content="https://trpuzzle.com/tilkile/">
+<meta property="og:image" content="https://trpuzzle.com/tilkile/logo.png">
+<meta name="twitter:card" content="summary">
+  <meta name="description" content="Tilkile: Türkçe günlük kelime bulmacası. Harfleri tahmin et, gizli kelimeleri çöz, ama her yanlış tahmin bulmacayı büyütür!" />
+  <link rel="icon" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-fold">
+  <header class="topbar">
+    <h1 class="brand">
+      <img class="logo" src="logo.png" alt="TR logosu" />
+      <span class="brand-logo">
+        <img class="bl-light" src="logo-light.png" alt="TİLKİLE" />
+        <img class="bl-dark" src="logo-dark.png" alt="" aria-hidden="true" />
+      </span>
+    </h1>
+    <div class="topbar-right">
+      <button class="icon-btn" id="mode-btn" aria-label="Oyun modu"></button>
+      <button class="icon-btn" id="stats-btn" aria-label="İstatistikler">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <rect x="3.5" y="11" width="5" height="10" fill="currentColor"/>
+          <rect x="9.5" y="4" width="5" height="17" fill="currentColor"/>
+          <rect x="15.5" y="8" width="5" height="13" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="help-btn" aria-label="Nasıl oynanır">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/>
+          <path d="M9.2 9.2a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.5-2.8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="17.2" r="1.2" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="settings-btn" aria-label="Ayarlar">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="puzzle-info" id="puzzle-info"></div>
+
+  <main class="game">
+    <div class="status-row">
+      <div class="lives" id="lives" aria-label="Kalan can">
+        <span class="lives-label">Canlar</span>
+        <span class="hearts" id="hearts"></span>
+      </div>
+    </div>
+
+    <section class="board" id="board" aria-live="polite"></section>
+
+    <div class="message" id="message"></div>
+
+    <section class="keyboard" id="keyboard"></section>
+  </main>
+  </div>
+
+  <!-- Nasıl oynanır -->
+  <div class="modal-overlay" id="help-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Nasıl Oynanır</h2>
+      <p><strong>Tilkile</strong>'nin amacı, harfleri tahmin ederek bulmacayı <strong>mümkün olan en az kelimeyle</strong> tamamlamaktır.</p>
+      <ul>
+        <li>Bir harf tahmin edin. Harf, tahtadaki <strong>hiçbir kelimede yoksa</strong> tahtaya <strong>yeni bir kelime eklenir</strong>.</li>
+        <li>Mevcut kelime veya kelimelerde tahmin ettiğiniz harf bulunuyorsa <strong>yeşil</strong> renkte gelir.</li>
+      </ul>
+      <div class="demo-word" aria-hidden="true">
+        <span class="demo-tile correct">H</span>
+      </div>
+      <ul>
+        <li>Yeni eklenen kelimede önceden tahmin etmiş olduğunuz ve <strong>yanlış çıkan</strong> bir harf varsa <strong>gri</strong> renkte gelir.</li>
+      </ul>
+      <p>Örneğin <strong>T</strong> harfi daha önceki tahminlerinizde hiçbir kelimede yer almıyordu, ancak yeni kelimede var:</p>
+      <div class="demo-word" aria-hidden="true">
+        <span class="demo-tile correct">K</span>
+        <span class="demo-tile correct">A</span>
+        <span class="demo-tile miss">T</span>
+        <span class="demo-tile correct">I</span>
+        <span class="demo-tile correct">R</span>
+      </div>
+      <ul>
+        <li>Tahmin ettiğiniz harf tahtada <strong>birden fazla yerde</strong> geçiyorsa hepsi aynı anda açılır.</li>
+        <li>Tahtadaki <strong>tüm kelimeler tamamlandığında</strong> oyunu kazanırsınız.</li>
+        <li>Tahtada <strong>8 kelime</strong> varken yanlış bir harf tahmin ederseniz oyunu kaybedersiniz.</li>
+      </ul>
+      <p class="muted"><strong>Günlük</strong> modda her gün herkese aynı bulmaca gelir; serinizi uzatın. <strong>Arşiv</strong> modunda geçmiş günlerin bulmacalarını oynayabilirsiniz.</p>
+      <div class="help-footer">
+        <label class="dont-show">
+          <input type="checkbox" id="dont-show-help" />
+          <span>Bir daha gösterme</span>
+        </label>
+        <button class="primary-btn help-ok" data-close>Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Oyun modu -->
+  <div class="modal-overlay" id="mode-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Oyun modu</h2>
+      <div class="mode-list" id="mode-seg">
+        <button class="mode-opt" data-mode="daily">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4.5" width="18" height="17" rx="0"/>
+            <line x1="3" y1="9.5" x2="21" y2="9.5"/>
+            <line x1="8" y1="2.5" x2="8" y2="6.5"/>
+            <line x1="16" y1="2.5" x2="16" y2="6.5"/>
+          </svg>
+          <span>Günlük oyun</span>
+        </button>
+        <button class="mode-opt" data-mode="archive" data-action="archive">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="5"/>
+            <path d="M4 9v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/>
+            <line x1="9.5" y1="13" x2="14.5" y2="13"/>
+          </svg>
+          <span>Arşiv</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arşiv -->
+  <div class="modal-overlay" id="archive-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Arşiv</h2>
+      <p class="muted">Geçmiş günlük bulmacaları oyna (1 Ağustos 2026'dan bugüne).</p>
+      <div class="archive-grid" id="archive-grid"></div>
+    </div>
+  </div>
+
+  <!-- Ayarlar -->
+  <div class="modal-overlay" id="settings-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>Ayarlar</h2>
+
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <div class="setting-name">Tema</div>
+          <div class="setting-desc muted">Koyu veya açık.</div>
+        </div>
+        <select id="theme-select" class="setting-select" aria-label="Tema">
+          <option value="dark">Koyu</option>
+          <option value="light">Açık</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <div class="setting-name">Ekran klavyesi</div>
+          <div class="setting-desc muted">Fiziksel klavye kullanıyorsanız kapatabilirsiniz.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="keyboard-switch" checked />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- İstatistikler -->
+  <div class="modal-overlay" id="stats-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2>İstatistikler</h2>
+      <div class="stats-body" id="stats-body"></div>
+      <div id="stats-share-area"></div>
+    </div>
+  </div>
+
+  <!-- Oyun sonu -->
+  <div class="modal-overlay" id="end-modal" hidden>
+    <div class="modal">
+      <button class="close-btn" data-close aria-label="Kapat">×</button>
+      <h2 id="end-title"></h2>
+      <p id="end-sub" class="muted"></p>
+      <div class="stats-body" id="end-stats"></div>
+      <div class="end-actions">
+        <button class="primary-btn" id="share-btn">Sonucu Paylaş</button>
+        <button class="secondary-btn" id="archive-back-btn" hidden>Arşive Dön</button>
+      </div>
+      <p id="countdown" class="muted countdown"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="words.js"></script>
+  <script src="game.js"></script>
+
+<section class="tp-bilgi" id="bilgi">
+  <h2>Tilkile nasıl bir oyun?</h2>
+  <p>Tilkile'de amaç, tahtadaki gizli kelimeleri <strong>harf tahmin ederek</strong> mümkün olan en az kelimeyle tamamlamaktır. İşin tilkilik kısmı şu: tahmin ettiğin harf tahtadaki <strong>hiçbir kelimede yoksa, tahtaya yeni bir kelime eklenir</strong> — yani her yanlış, bulmacayı büyütür. Tahta <strong>sekiz kelimeye</strong> ulaşmışken bir yanlış daha yaparsan oyun kaybedilir; tüm kelimeleri tamamlarsan kazanırsın.</p>
+  <h2>Nasıl oynanır?</h2>
+  <p>Klavyeden bir harf seç. Harf mevcut kelimelerin herhangi birinde geçiyorsa, geçtiği <strong>bütün</strong> konumlarda birden yeşil olarak açılır. Geçmiyorsa tahtaya yeni bir gizli kelime gelir; üstelik yeni kelimede daha önce yanlış çıkmış bir harf varsa gri olarak işaretli gelir. Az harfle çok kelime açmak, oyunun puan ve gurur kaynağıdır.</p>
+  <h2>Strateji ipuçları</h2>
+  <ul>
+    <li><strong>Seslilerle aç:</strong> a, e ve i Türkçe kelimelerin büyük bölümünde geçer — ilk tahminler için en güvenli bölgedir.</li>
+    <li><strong>Sık ünsüzlerle sür:</strong> Sesliler tükendiğinde k, l, r, n ve t en yüksek isabet oranını verir.</li>
+    <li><strong>Kalıpları oku:</strong> Açılan harflerin dizilimi (ör. sonu "_ık") sana kelimenin tamamını fısıldar; kalan harfleri kelimeyi tamamlamaya adayarak seç.</li>
+    <li><strong>Riski erteleme:</strong> Emin olmadığın "nadir" harfleri (j, f, ğ gibi) tahta küçükken dene — sekiz kelimeye dayandığında her yanlış ölümcüldür.</li>
+  </ul>
+  <h2>Sık sorulan sorular</h2>
+  <p><strong>Günlük bulmaca ne zaman yenilenir?</strong> Her gün Türkiye saatiyle 00.00'da; geçmiş günler Arşiv modunda oynanabilir.</p>
+  <p><strong>İstatistiklerim nerede?</strong> Serilerin ve oyun geçmişin yalnızca kendi cihazında saklanır — üyelik yok, veri gönderimi yok.</p>
+</section>
+
+<footer class="tp-footer">
+  Bir <a href="https://trpuzzle.com/">TrPuzzle</a> oyunu — sekiz günlük Türkçe bulmacanın tamamını keşfet.<br>
+  <a href="https://trpuzzle.com/">Anasayfa</a> · <a href="https://trpuzzle.com/hakkinda.html">Hakkında</a> · <a href="https://trpuzzle.com/gizlilik.html">Gizlilik</a> · <a href="https://trpuzzle.com/kosullar.html">Koşullar</a>
+</footer>
+<style>
+/* ── TrPuzzle bilgi bölümü ve mini footer ── */
+.tp-bilgi{max-width:640px;margin:3rem auto 0;padding:1.75rem 1.4rem .5rem;border-top:1px solid rgba(128,128,128,.35);line-height:1.65;font-size:.95rem;text-align:left}
+.tp-bilgi h1{font-size:1.35rem;line-height:1.3;margin:0 0 .5em}
+.tp-bilgi h2{font-size:1.08rem;line-height:1.3;margin:1.5em 0 .5em}
+.tp-bilgi p{margin:.6em 0}
+.tp-bilgi ul{margin:.6em 0;padding-left:1.35rem}
+.tp-bilgi li{margin:.35em 0}
+.tp-bilgi details{margin:.5em 0}
+.tp-bilgi summary{cursor:pointer;font-weight:600}
+.tp-footer{max-width:640px;margin:0 auto;padding:1.25rem 1.4rem 2rem;font-size:.8rem;opacity:.72;text-align:center;line-height:1.7}
+.tp-footer a{color:inherit}
+</style>
+</body>
+</html>
