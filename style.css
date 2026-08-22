@@ -147,9 +147,11 @@ body {
   flex-direction: column;
 }
 /* mobilde ust katman ekrani doldurur; klavye alt kenara yaslanir,
-   bilgi bolumu (tp-bilgi) alta kayar. Masaustunde mevcut davranis korunur. */
+   bilgi bolumu (tp-bilgi) alta kayar. Masaustunde mevcut davranis korunur.
+   100svh (dvh degil): adres cubugu acilip kapanirken yukseklik degismez,
+   boylece oyun blogu sabit kalir, kaydirirken ziplamaz. */
 @media (max-width: 640px) {
-  .app-fold { min-height: 100svh; min-height: 100dvh; }
+  .app-fold { min-height: 100svh; }
 }
 
 /* ---- Game area ---- */
