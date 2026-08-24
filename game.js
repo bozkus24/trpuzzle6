@@ -677,7 +677,7 @@
         } catch (e) {}
       });
     }
-    if (!hideHelp) openHelp(true);
+    if (!hideHelp && (location.hash || "") !== "#arsiv") openHelp(true);
 
     startGame(); // bugünün günlük bulmacası
     syncModeUI();
