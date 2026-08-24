@@ -441,6 +441,8 @@ body.kb-hidden .keyboard { display: none; }
   padding: 12px 14px 2px;
   min-height: 1.2em;
 }
+/* gunluk modda bilgi satiri bos; bosluk birakmasin */
+.puzzle-info:empty { display: none; }
 
 /* ---- Oyun modu paneli ---- */
 .mode-list { display: flex; flex-direction: column; gap: 10px; }
