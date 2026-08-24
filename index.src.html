@@ -16,8 +16,57 @@
   <meta name="description" content="Tilkile: Türkçe günlük kelime bulmacası. Harfleri tahmin et, gizli kelimeleri çöz, ama her yanlış tahmin bulmacayı büyütür!" />
   <link rel="icon" href="logo.png" />
   <link rel="stylesheet" href="style.css" />
+<style>
+/* ── TrPuzzle ara sayfa (splash) — HER ZAMAN AYDINLIK, koyu mod yok ── */
+#tp-splash{position:fixed;inset:0;z-index:99999;background:color-mix(in srgb, #b45c10 22%, #f4f2ec);
+  color:#1d1f24;display:flex;flex-direction:column;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior:contain}
+#tp-splash[hidden]{display:none}
+#tp-splash .tp-hd{flex:none;height:56px;display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid rgba(0,0,0,.08)}
+#tp-splash .tp-brand{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;
+  color:#1d1f24;text-decoration:none;letter-spacing:.3px}
+#tp-splash .tp-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:18px;padding:20px 24px 44px}
+#tp-splash .tp-ico{width:96px;height:96px;border-radius:24px;background:#fff;color:#b45c10;
+  display:flex;align-items:center;justify-content:center;flex:none}
+#tp-splash .tp-ico svg{width:58px;height:58px;display:block}
+#tp-splash .tp-ico .tp-foxmask{width:58px;height:58px;background:currentColor;
+  -webkit-mask:url(assets/tilkile.png) center/contain no-repeat;mask:url(assets/tilkile.png) center/contain no-repeat}
+#tp-splash .tp-name{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-weight:700;
+  font-size:44px;line-height:1;letter-spacing:.5px;margin:0}
+#tp-splash .tp-tag{font-family:"Fraunces",Georgia,serif;font-size:20px;line-height:1.3;
+  color:#5b6068;max-width:24ch;margin:0}
+#tp-splash .tp-play{border:none;border-radius:999px;background:#1d1f24;color:#fff;font-size:19px;
+  font-weight:700;padding:16px 0;width:230px;max-width:80vw;cursor:pointer;margin-top:6px;
+  font-family:inherit;touch-action:manipulation}
+#tp-splash .tp-play:active{transform:translateY(1px)}
+#tp-splash .tp-meta{font-size:14px;line-height:1.8;color:#5b6068;margin-top:6px}
+#tp-splash .tp-by{display:block}
+@media(min-width:800px){
+  #tp-splash .tp-name{font-size:60px}
+  #tp-splash .tp-tag{font-size:27px}
+  #tp-splash .tp-ico{width:116px;height:116px}
+  #tp-splash .tp-ico svg,#tp-splash .tp-ico .tp-foxmask{width:70px;height:70px}
+}
+</style>
 </head>
 <body>
+<div id="tp-splash">
+  <header class="tp-hd"><a class="tp-brand" href="/">TrPuzzle</a></header>
+  <div class="tp-body">
+    <div class="tp-ico"><span class="tp-foxmask"></span></div>
+    <h1 class="tp-name">Tilkile</h1>
+    <p class="tp-tag">Harfleri tahmin et, gizli kelimeleri çöz.</p>
+    <button type="button" class="tp-play" id="tpPlay">Oyna</button>
+    <div class="tp-meta">
+      <span id="tpDate"></span><br>
+      <span id="tpNo"></span>
+      <span class="tp-by">Hazırlayan: TrPuzzle</span>
+    </div>
+  </div>
+</div>
   <div class="app-fold">
   <header class="topbar">
     <h1 class="brand">
@@ -241,5 +290,24 @@
 .tp-footer{max-width:640px;margin:0 auto;padding:1.25rem 1.4rem 2rem;font-size:.8rem;opacity:.72;text-align:center;line-height:1.7}
 .tp-footer a{color:inherit}
 </style>
+<script>
+(function(){
+  var s=document.getElementById("tp-splash");
+  if(!s) return;
+  try{
+    var d=new Date();
+    var ay=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+    var de=document.getElementById("tpDate");
+    if(de) de.textContent=d.getDate()+" "+ay[d.getMonth()]+" "+d.getFullYear();
+    var LAUNCH=new Date(2026,7,1); /* 1 Ağustos 2026 = bulmaca #1 (game.js ile aynı) */
+    function lm(x){return new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime();}
+    var no=Math.floor((lm(d)-lm(LAUNCH))/86400000)+1;
+    var ne=document.getElementById("tpNo");
+    if(ne && no>0) ne.textContent="Bulmaca No. "+no;
+  }catch(e){}
+  var b=document.getElementById("tpPlay");
+  if(b) b.addEventListener("click",function(){ s.hidden=true; });
+})();
+</script>
 </body>
 </html>
