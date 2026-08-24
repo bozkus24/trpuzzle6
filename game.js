@@ -550,9 +550,10 @@
   function updateInfoLine() {
     const el = $("#puzzle-info");
     if (!el) return;
+    // Günlük modda bilgi satırı gösterilmez; arşivde hangi günün oynandığı belli olsun.
+    if (state.mode === "daily") { el.textContent = ""; return; }
     const d = dateForPuzzle(state.puzzleNo);
-    const label = state.mode === "daily" ? "Günün Oyunu" : "Arşiv";
-    el.textContent = `${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    el.textContent = `Arşiv · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
   function syncModeUI() {
     updateModeUI();

@@ -459,6 +459,8 @@ body.kb-hidden .keyboard { display: none; }
   padding: 12px 14px 2px;
   min-height: 1.2em;
 }
+/* gunluk modda bilgi satiri bos; bosluk birakmasin */
+.puzzle-info:empty { display: none; }
 
 /* ---- Oyun modu paneli ---- */
 .mode-list { display: flex; flex-direction: column; gap: 10px; }
@@ -1436,9 +1438,10 @@ if (typeof module !== 'undefined') { module.exports = WORDS; }
   function updateInfoLine() {
     const el = $("#puzzle-info");
     if (!el) return;
+    // Günlük modda bilgi satırı gösterilmez; arşivde hangi günün oynandığı belli olsun.
+    if (state.mode === "daily") { el.textContent = ""; return; }
     const d = dateForPuzzle(state.puzzleNo);
-    const label = state.mode === "daily" ? "Günün Oyunu" : "Arşiv";
-    el.textContent = `${label} · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    el.textContent = `Arşiv · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
   function syncModeUI() {
     updateModeUI();
