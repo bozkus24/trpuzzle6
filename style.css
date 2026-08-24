@@ -51,6 +51,8 @@
 
 html, body {
   height: 100%;
+  /* cift dokunmayla yakinlastirmayi engelle (iOS user-scalable=no'yu yok sayabilir) */
+  touch-action: manipulation;
 }
 
 body {
