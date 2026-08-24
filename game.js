@@ -253,6 +253,25 @@
     saveGame();
   }
 
+  // ---- Harf onayı (ilk ziyaret) ----
+  // Yanlış harf tahtaya yeni kelime eklediği için, kullanıcı "bir daha
+  // gösterme"yi işaretleyip kararını verene dek her denemede sorulur.
+  let pendingLetter = null;
+  function confirmSkipped() {
+    try { return localStorage.getItem("foximax-skip-confirm") === "1"; } catch (e) { return false; }
+  }
+  function confirmGuess(letter) {
+    // Yalnızca gerçek (yeni ve geçerli) bir deneme onay ister; gerisi guess'e düşer
+    if (confirmSkipped() || state.status !== "playing" ||
+        !ALPHABET.has(letter) || state.guessed.has(letter)) {
+      guess(letter);
+      return;
+    }
+    pendingLetter = letter;
+    $("#confirm-letter").textContent = letter;
+    openModal("#confirm-modal");
+  }
+
   function finishGame(won) {
     render();
     saveGame();
@@ -327,7 +346,7 @@
           btn.classList.add(state.absent.has(L) ? "absent" : "correct");
         }
         if (state.status !== "playing") btn.disabled = true;
-        btn.addEventListener("click", () => guess(L));
+        btn.addEventListener("click", () => confirmGuess(L));
         row.appendChild(btn);
       });
       kb.appendChild(row);
@@ -644,12 +663,32 @@
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === "Escape") {
         document.querySelectorAll(".modal-overlay:not([hidden])").forEach((ov) => closeModal(ov));
+        pendingLetter = null;
         return;
+      }
+      const cm = $("#confirm-modal");
+      if (cm && !cm.hidden) {
+        if (e.key === "Enter") $("#confirm-yes").click();
+        return; // onay penceresi açıkken yeni harf alınmaz
       }
       if (e.key.length !== 1) return;
       const L = trUpper(e.key);
-      if (ALPHABET.has(L)) { guess(L); }
+      if (ALPHABET.has(L)) { confirmGuess(L); }
     });
+
+    // Harf onayı düğmeleri: kutucuk işaretliyken verilen karar kalıcıdır
+    function confirmDecision(accepted) {
+      const c = $("#confirm-dont");
+      if (c && c.checked) {
+        try { localStorage.setItem("foximax-skip-confirm", "1"); } catch (e) {}
+      }
+      closeModal($("#confirm-modal"));
+      const L = pendingLetter;
+      pendingLetter = null;
+      if (accepted && L) guess(L);
+    }
+    $("#confirm-yes").addEventListener("click", () => confirmDecision(true));
+    $("#confirm-no").addEventListener("click", () => confirmDecision(false));
   }
 
   // ---- Başlat ----

@@ -43,6 +43,22 @@
 #tp-splash .tp-sw{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 #tp-splash .tp-nav-sep{height:1px;background:rgba(0,0,0,.1);margin:9px 14px}
 #tp-splash .tp-drawer-nav a.tp-nav-page{color:#5b6068;font-size:14.5px;padding-left:39px}
+#tp-splash .tp-nav-row{list-style:none;display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;cursor:pointer;font-weight:600;font-size:15.5px;color:#1d1f24}
+#tp-splash .tp-nav-row::-webkit-details-marker{display:none}
+#tp-splash .tp-nav-row:hover{background:rgba(0,0,0,.05)}
+#tp-splash .tp-nav-ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12);flex-shrink:0}
+#tp-splash .tp-nav-ico svg,#tp-splash .tp-nav-ico img,#tp-splash .tp-nav-ico .tp-nav-mask{display:block;width:22px;height:22px;object-fit:contain}
+#tp-splash .tp-nav-mask{background-color:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain}
+#tp-splash .tp-nav-name{flex:1}
+#tp-splash .tp-nav-chev{width:18px;height:18px;color:#5b6068;flex-shrink:0;transition:transform .2s ease}
+#tp-splash .tp-nav-item[open] .tp-nav-chev{transform:rotate(180deg)}
+#tp-splash .tp-nav-sub{display:flex;flex-direction:column;gap:6px;padding:3px 10px 8px 58px}
+#tp-splash .tp-nav-sub a{display:block;padding:8px 14px;border:1px solid rgba(0,0,0,.18);border-radius:999px;text-align:center;font-weight:700;font-size:13.5px;color:#1d1f24;text-decoration:none}
+#tp-splash .tp-nav-sub a:hover{background:rgba(0,0,0,.05)}
+#tp-splash .tp-social{margin-top:auto;border-top:1px solid rgba(0,0,0,.1);padding:10px 10px 14px}
+#tp-splash .tp-social a{display:flex;align-items:center;gap:11px;padding:9px 14px;border-radius:10px;font-weight:600;font-size:13.5px;color:#5b6068;text-decoration:none}
+#tp-splash .tp-social a:hover{background:rgba(0,0,0,.05);color:#1d1f24}
+#tp-splash .tp-social svg{width:17px;height:17px;flex-shrink:0}
 @media(min-width:800px){#tp-splash .tp-hd{justify-content:flex-start;padding:0 18px;gap:8px;height:66px} #tp-splash .tp-menu{display:inline-flex;position:static;transform:none} #tp-splash .tp-hd .tp-brand{font-size:26px} #tp-splash .tp-hd .tp-brand-logo{height:36px}}
 #tp-splash .tp-brand{display:inline-flex;align-items:center;gap:9px;font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;
   color:#1d1f24;text-decoration:none;letter-spacing:.3px}
@@ -78,25 +94,288 @@
   <aside class="tp-drawer" id="tpDrawer" aria-label="Oyun menüsü">
     <div class="tp-drawer-hd"><b>Oyunlar</b><button class="tp-drawer-x" id="tpDrawerX" type="button" aria-label="Kapat">&#10005;</button></div>
     <nav class="tp-drawer-nav">
-      <a href="/harfle/"><span class="tp-sw" style="background:#79b86d"></span>Harfle</a>
-      <a href="/harf500/"><span class="tp-sw" style="background:#63cdb2"></span>Harf500</a>
-      <a href="/baklava/"><span class="tp-sw" style="background:#f0c34e"></span>Baklava</a>
-      <a href="/arala/"><span class="tp-sw" style="background:#6fb5e8"></span>Arala</a>
-      <a href="/tilkile/"><span class="tp-sw" style="background:#ff9f45"></span>Tilkile</a>
-      <a href="/kesme/"><span class="tp-sw" style="background:#ff7a6e"></span>Kesme</a>
-      <a href="/bagla/"><span class="tp-sw" style="background:#9d8fff"></span>Bağla</a>
-      <a href="/sehirle/"><span class="tp-sw" style="background:#e08bd4"></span>Şehirle</a>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#3f7a38"><!-- Tek Wordle karosu, içinde H (Baloo 2 — yuvarlak, farklı font) -->
+          <svg viewBox="0 0 100 100">
+            <rect x="14" y="14" width="72" height="72" rx="13" fill="currentColor"/>
+            <text x="50" y="52" text-anchor="middle" dominant-baseline="central"
+                  font-family="'Baloo 2', system-ui, sans-serif" font-weight="700"
+                  font-size="56" fill="#fff">H</text>
+          </svg></span>
+          <span class="tp-nav-name">Harfle</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/harfle/">Oyna</a>
+          <a href="/harfle/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#1f8a6d"><!-- Bitişik 2x2 karo bloğu: H-5-0-0. Her hücre kenarlıklı,
+               dolgu tonları farklı (boş / dolu / soluk / orta). -->
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <clipPath id="h5dc"><rect x="8" y="8" width="84" height="84" rx="6"/></clipPath>
+            </defs>
+            <g clip-path="url(#h5dc)">
+              <rect x="50" y="8" width="42" height="42" fill="currentColor"/>
+              <rect x="8" y="50" width="42" height="42" fill="currentColor" fill-opacity="0.32"/>
+              <rect x="50" y="50" width="42" height="42" fill="currentColor" fill-opacity="0.62"/>
+            </g>
+            <g stroke="currentColor" stroke-width="4.5" fill="none">
+              <rect x="8" y="8" width="84" height="84" rx="6"/>
+              <path d="M50 8 V92 M8 50 H92"/>
+            </g>
+            <g font-family="'Fraunces', Georgia, serif" font-weight="700" font-size="28" text-anchor="middle">
+              <text x="29" y="39" fill="currentColor">H</text>
+              <text x="71" y="39" fill="#fff">5</text>
+              <text x="29" y="81" fill="currentColor">0</text>
+              <text x="71" y="81" fill="#fff">0</text>
+            </g>
+          </svg></span>
+          <span class="tp-nav-name">Harf500</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/harf500/">Oyna</a>
+          <a href="/harf500/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#a97d10"><!-- Waffle kafesi 45° döndürülmüş (baklava/elmas formu):
+               5x5 ızgara, dört köşe deliği, köşeli kareler, sık aralık -->
+          <svg viewBox="0 0 100 100">
+            <g transform="rotate(45 50 50)" stroke="currentColor" stroke-width="1.8">
+              <!-- 1. satır -->
+              <rect x="18.5" y="18.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="31.5" y="18.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="44.5" y="18.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="57.5" y="18.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="70.5" y="18.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <!-- 2. satır (c1, c3 delik) -->
+              <rect x="18.5" y="31.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="44.5" y="31.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="70.5" y="31.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <!-- 3. satır -->
+              <rect x="18.5" y="44.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="31.5" y="44.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="44.5" y="44.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="57.5" y="44.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="70.5" y="44.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <!-- 4. satır (c1, c3 delik) -->
+              <rect x="18.5" y="57.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="44.5" y="57.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="70.5" y="57.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <!-- 5. satır -->
+              <rect x="18.5" y="70.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="31.5" y="70.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="44.5" y="70.5" width="11" height="11" rx="1" fill="currentColor"/>
+              <rect x="57.5" y="70.5" width="11" height="11" rx="1" fill="currentColor" fill-opacity="0.42"/>
+              <rect x="70.5" y="70.5" width="11" height="11" rx="1" fill="currentColor"/>
+            </g>
+          </svg></span>
+          <span class="tp-nav-name">Baklava</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/baklava/">Oyna</a>
+          <a href="/baklava/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#2b6ea8"><!-- Aradaki kelime: üst/alt dolu barlar, ortada kesikli bilinmeyen,
+               içe bakan oklar aralığı daraltmayı anlatır -->
+          <svg viewBox="0 0 100 100">
+            <rect x="10" y="10" width="80" height="16" rx="4" fill="currentColor"/>
+            <path d="M43 32 L50 40 L57 32 Z" fill="currentColor" fill-opacity="0.55"/>
+            <rect x="10" y="42" width="80" height="16" rx="4" fill="none"
+                  stroke="currentColor" stroke-width="3.5" stroke-dasharray="7 5"/>
+            <path d="M43 68 L50 60 L57 68 Z" fill="currentColor" fill-opacity="0.55"/>
+            <rect x="10" y="74" width="80" height="16" rx="4" fill="currentColor"/>
+          </svg></span>
+          <span class="tp-nav-name">Arala</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/arala/">Oyna</a>
+          <a href="/arala/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#b45c10"><span class="tp-nav-mask" style="-webkit-mask-image:url(data:image/png;base64,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);mask-image:url(data:image/png;base64,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)"></span></span>
+          <span class="tp-nav-name">Tilkile</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/tilkile/">Oyna</a>
+          <a href="/tilkile/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#cc4437"><svg viewBox="0 0 100 100">
+            <rect x="16" y="16" width="68" height="68" rx="8" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+            <polygon points="80,24 80,80 24,80" fill="currentColor" fill-opacity="0.35"/>
+            <path d="M22 78 L78 22" stroke="currentColor" stroke-width="4.5" stroke-dasharray="9 7" stroke-linecap="round"/>
+          </svg></span>
+          <span class="tp-nav-name">Kesme</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/kesme/">Oyna</a>
+          <a href="/kesme/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#5f4fd1"><img src="data:image/png;base64,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" alt=""></span>
+          <span class="tp-nav-name">Bağla</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/bagla/">Oyna</a>
+          <a href="/bagla/#arsiv">Arşiv</a>
+        </div>
+      </details>
+      <details class="tp-nav-item">
+        <summary class="tp-nav-row">
+          <span class="tp-nav-ico" style="color:#a8479a"><svg viewBox="-44 -44 1112 1112"><g transform="translate(0,1024) scale(0.1,-0.1)"><path d="M584 7359 c-28 -32 -51 -41 -123 -49 -62 -8 -68 -11 -106 -54 -25
+-29 -48 -46 -62 -46 -33 0 -82 -58 -68 -80 3 -5 37 -28 75 -50 l70 -41 0 -65
+c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
+-114 -88 -204 -50 -48 -66 -71 -66 -92 0 -23 6 -29 38 -37 20 -5 74 -13 119
+-17 70 -5 87 -4 110 11 60 39 133 37 133 -4 0 -14 -19 -25 -75 -46 -41 -15
+-94 -41 -117 -58 -24 -18 -61 -39 -83 -48 -39 -16 -40 -18 -42 -65 0 -27 -10
+-69 -21 -94 -12 -24 -19 -47 -16 -49 2 -3 30 20 62 50 31 30 83 75 115 99 32
+24 67 54 77 67 23 30 159 93 199 93 23 0 37 9 58 35 17 22 42 39 65 45 42 12
+119 92 151 158 17 34 26 42 48 42 14 0 40 5 56 10 24 9 41 7 80 -8 l51 -19 42
+28 c37 25 53 29 109 29 56 0 77 -5 140 -37 79 -40 103 -43 224 -28 l58 8 42
+-47 c24 -25 47 -46 52 -46 5 0 30 -21 56 -46 l47 -46 112 -9 c136 -11 163 -24
+35 -16 -57 3 -106 0 -135 -8 -25 -7 -89 -19 -143 -28 -71 -11 -109 -22 -138
+-41 -47 -32 -49 -48 -9 -76 24 -17 39 -20 69 -15 34 6 41 3 51 -14 9 -17 8
+-21 -5 -21 -8 0 -15 -7 -15 -16 0 -15 -8 -16 -62 -9 -113 13 -220 19 -380 20
+-159 0 -196 9 -142 34 44 20 30 47 -34 65 -32 9 -68 16 -79 16 -21 0 -21 -1
+-5 -42 8 -24 22 -51 30 -60 24 -29 -18 -41 -125 -36 -90 5 -96 7 -129 39 -19
+18 -34 39 -34 47 0 12 -10 13 -52 8 -28 -4 -59 -11 -69 -17 -23 -12 -85 -12
+-128 1 -38 11 -61 -1 -142 -76 -25 -23 -55 -45 -67 -48 -16 -5 -26 -23 -38
+-66 -16 -57 -17 -58 -59 -64 -35 -6 -45 -12 -53 -34 -21 -54 -32 -108 -32
+-162 0 -30 -9 -84 -20 -119 -24 -75 -18 -89 32 -72 55 20 249 51 320 51 56 0
+69 -3 77 -19 9 -16 2 -26 -43 -65 -39 -33 -63 -46 -85 -46 -26 0 -31 -4 -31
+-25 0 -15 9 -31 25 -41 14 -9 25 -25 25 -35 0 -10 13 -33 29 -51 40 -46 46
+-71 21 -93 -39 -35 -14 -65 54 -65 44 0 60 -33 27 -57 -28 -19 -61 -55 -61
+-65 0 -12 -68 -10 -75 2 -14 23 -25 7 -25 -34 0 -36 5 -49 25 -64 16 -13 25
+-30 25 -48 0 -42 8 -49 85 -85 l70 -32 -50 -9 c-58 -9 -120 -2 -152 18 -30 19
+-31 19 -35 -18 l-3 -33 -22 42 c-19 34 -21 46 -12 71 9 27 6 37 -25 86 -30 48
+-40 56 -66 56 l-30 0 0 -70 c0 -45 6 -82 16 -102 19 -36 7 -50 -39 -46 -22 2
+-32 -4 -45 -24 -15 -25 -15 -28 3 -47 10 -12 30 -21 44 -21 16 0 40 -15 67
+-41 l42 -42 27 27 c38 38 89 36 110 -4 8 -16 15 -43 15 -60 0 -29 3 -31 29
+-29 18 2 43 -6 69 -23 22 -15 52 -30 66 -34 30 -7 40 -18 53 -59 16 -46 -9
+-80 -79 -107 -32 -13 -58 -26 -58 -29 0 -4 11 -10 24 -13 32 -8 56 -79 56
+-167 0 -54 3 -68 18 -74 12 -4 25 3 43 24 29 36 77 45 59 12 -16 -31 -12 -51
+10 -51 13 0 18 -5 14 -15 -5 -11 3 -17 25 -21 30 -6 31 -9 29 -50 -3 -40 -6
+-45 -35 -55 -24 -8 -41 -7 -67 2 -30 11 -37 10 -64 -9 -28 -21 -29 -24 -20
+-56 9 -30 13 -33 29 -23 13 8 27 7 56 -2 26 -9 69 -11 138 -7 269 17 357 17
+353 4 -3 -7 -16 -14 -31 -16 -14 -2 -31 -10 -37 -18 -7 -8 -25 -14 -41 -14
+-24 0 -30 -6 -40 -40 l-12 -40 -61 -2 c-34 -1 -83 -3 -111 -3 -31 0 -77 -11
+-123 -29 -66 -27 -72 -31 -56 -43 24 -17 140 -17 151 0 4 7 21 21 37 31 23 15
+33 16 53 7 31 -14 85 -14 118 1 14 6 28 8 32 4 12 -11 -12 -40 -38 -46 -20 -5
+-21 -7 -6 -13 21 -8 23 -37 2 -37 -12 0 -35 -28 -35 -44 0 -20 48 0 88 37 26
+24 60 48 76 55 20 9 27 18 23 31 -4 16 3 20 52 25 87 10 118 0 131 -40 9 -25
+22 -38 48 -50 21 -8 44 -25 54 -36 14 -19 19 -20 32 -9 9 7 16 19 16 25 0 6 7
+22 16 34 l15 23 41 -32 c33 -27 37 -34 24 -41 -22 -12 -20 -44 3 -60 15 -11
+19 -26 19 -71 l-1 -58 59 -54 c42 -38 65 -52 79 -49 13 3 28 -3 39 -15 14 -15
+31 -21 61 -21 32 0 46 -6 63 -25 27 -31 45 -31 86 0 18 14 44 25 59 25 32 0
+108 32 125 53 12 14 18 14 53 2 22 -8 53 -22 70 -32 36 -21 43 -14 59 62 6 27
+20 65 31 85 13 21 22 58 25 95 7 118 14 144 45 166 28 20 32 20 70 5 27 -11
+71 -16 138 -16 77 0 110 -5 145 -20 25 -10 46 -24 46 -29 0 -5 15 -13 33 -16
+17 -4 48 -20 67 -35 19 -15 91 -56 160 -90 135 -67 144 -75 225 -195 67 -101
+118 -155 145 -155 11 0 33 -9 49 -21 44 -32 101 -36 156 -9 39 19 51 21 72 11
+25 -12 42 -3 43 22 0 4 58 7 129 7 102 0 131 3 141 15 14 17 41 20 56 5 7 -7
+26 7 59 40 55 55 69 60 86 28 l11 -21 17 26 c8 15 23 27 33 27 14 0 16 6 12
+29 -5 25 3 37 78 111 45 45 101 93 123 107 22 14 51 36 65 49 20 18 41 24 102
+30 73 6 78 5 108 -20 17 -14 37 -26 43 -26 7 0 34 -18 61 -40 26 -22 55 -40
+63 -40 9 0 31 -9 49 -21 26 -16 38 -18 53 -10 11 6 39 11 63 11 24 0 48 4 54
+8 14 9 34 68 34 98 0 19 5 24 26 24 18 0 45 17 86 55 32 30 63 55 69 55 22 0
+88 -54 99 -81 7 -17 11 -53 8 -84 -4 -46 -10 -62 -38 -90 -18 -18 -45 -39 -59
+-45 -15 -6 -46 -33 -69 -60 l-43 -50 40 -95 c44 -101 47 -123 30 -174 -16 -46
+8 -68 81 -73 53 -3 54 -3 63 29 6 18 18 35 28 38 9 3 29 15 43 26 24 18 26 27
+26 90 l0 69 44 0 c25 0 56 -4 70 -10 21 -8 30 -5 55 20 l30 30 -29 15 c-49 25
+-73 70 -66 118 4 23 10 69 15 103 8 54 21 91 49 132 7 11 17 10 48 -7 21 -12
+50 -21 64 -21 55 0 72 -11 68 -42 -7 -42 28 -65 73 -49 18 6 67 11 109 11 63
+0 80 3 94 19 20 22 96 51 135 51 14 0 49 14 76 30 109 64 149 80 203 80 66 0
+142 -36 194 -94 l38 -41 218 1 c272 2 344 12 464 65 51 23 120 52 153 66 33
+14 76 40 95 59 19 18 51 40 70 48 20 8 44 24 54 35 12 13 31 21 52 21 18 0 54
+5 81 11 40 9 68 8 145 -5 118 -20 178 -20 223 -2 19 8 56 18 82 21 88 12 201
+54 225 85 13 15 38 35 56 44 31 16 35 16 65 -1 25 -15 33 -27 37 -59 4 -29 9
+-39 23 -38 9 0 31 1 48 2 39 2 90 55 109 112 7 22 24 47 38 56 22 15 28 15 68
+-1 42 -16 47 -16 93 1 39 14 54 15 81 5 18 -6 48 -11 67 -11 18 0 51 -11 73
+-25 21 -14 46 -22 55 -19 8 4 22 1 30 -6 10 -8 40 -11 91 -8 70 3 78 6 99 32
+22 28 26 29 82 22 41 -4 63 -12 76 -27 19 -23 23 -64 7 -74 -19 -12 -10 -61
+15 -85 20 -19 30 -22 43 -14 9 6 18 20 20 32 2 13 17 26 45 37 22 9 56 30 74
+46 21 18 45 29 64 29 19 0 32 6 36 18 3 9 13 25 21 34 13 16 12 18 -11 27 -15
+6 -38 30 -54 53 -15 24 -35 52 -45 64 -13 15 -20 46 -26 110 -7 87 -8 89 -34
+92 -16 2 -30 11 -33 23 -8 25 -55 49 -98 49 -31 0 -35 3 -39 32 -3 17 1 43 8
+57 8 14 14 31 14 37 0 6 11 21 25 34 14 13 25 35 25 49 0 13 9 44 21 68 27 56
+22 77 -18 81 -17 2 -37 9 -43 17 -12 15 -29 124 -36 245 -5 66 -8 77 -27 85
+-34 15 -48 53 -41 111 8 65 0 88 -31 102 -18 8 -25 19 -25 40 0 16 -5 44 -11
+62 -9 26 -9 34 2 41 18 11 66 11 88 0 12 -7 28 -2 59 17 41 26 42 28 42 82 1
+87 14 128 54 165 20 18 36 37 36 43 0 5 -29 41 -64 78 l-64 69 -123 1 c-168 1
+-288 33 -259 69 8 9 8 15 0 20 -14 9 -60 112 -60 134 0 9 -7 26 -15 38 -13 19
+-12 24 14 60 16 22 37 65 47 96 16 52 16 58 1 99 -10 24 -17 53 -17 64 0 30
+-34 70 -86 100 -31 18 -44 32 -44 48 0 12 -7 32 -16 44 -12 18 -25 22 -69 22
+-49 0 -56 3 -68 28 -8 15 -13 32 -10 38 2 5 -15 18 -37 28 -24 10 -54 36 -73
+62 -23 32 -37 43 -52 40 -15 -4 -24 3 -35 27 -14 29 -20 32 -66 35 -46 3 -54
+0 -73 -24 -12 -15 -21 -34 -21 -43 0 -31 -15 -43 -41 -32 -13 6 -82 15 -153
+20 l-129 9 -25 -29 c-22 -27 -26 -28 -42 -14 -9 8 -28 15 -43 15 -14 0 -38 5
+-54 11 -27 10 -31 8 -93 -59 -51 -55 -73 -72 -103 -77 -20 -4 -59 -25 -86 -46
+-31 -25 -59 -39 -77 -39 -51 0 -97 -19 -133 -54 -38 -37 -78 -56 -115 -56 -13
+0 -29 -7 -37 -16 -7 -9 -40 -29 -73 -46 -58 -30 -62 -30 -89 -14 -16 9 -51 16
+-80 16 -39 0 -77 11 -154 44 -89 39 -106 43 -140 35 -21 -5 -59 -9 -84 -9 -26
+0 -110 -21 -200 -49 -85 -27 -174 -52 -197 -56 -47 -8 -167 7 -269 32 -60 15
+-62 16 -68 54 -7 38 -7 39 -50 39 -36 0 -45 -4 -50 -21 -6 -18 -12 -20 -43
+-14 -20 4 -49 13 -64 21 -16 8 -62 20 -104 27 -73 11 -75 13 -99 54 -37 62
+-73 83 -155 90 l-71 6 -39 -38 c-37 -36 -39 -37 -75 -25 -27 9 -41 21 -51 45
+-10 26 -22 35 -51 42 l-38 9 -7 72 c-4 39 -15 83 -24 96 -23 36 -89 44 -176
+21 -90 -23 -165 -16 -227 22 -54 34 -106 105 -114 160 -8 47 -45 106 -70 111
+-10 2 -27 -7 -38 -21 -46 -59 -71 -66 -243 -66 -117 0 -167 3 -193 14 -20 8
+-56 15 -82 15 -26 0 -98 7 -161 16 -63 9 -130 14 -149 11 -77 -10 -168 -41
+-201 -67 -28 -22 -57 -31 -133 -43 -73 -11 -110 -23 -145 -45 -26 -16 -60 -33
+-76 -36 -16 -4 -49 -24 -75 -45 -25 -21 -65 -43 -88 -50 -24 -6 -71 -34 -105
+-62 -60 -47 -89 -63 -192 -108 -38 -17 -46 -26 -61 -70 -14 -43 -24 -55 -58
+-72 -37 -19 -54 -21 -181 -17 -141 4 -141 4 -212 41 -91 49 -133 56 -171 30
+-15 -11 -47 -23 -70 -27 -47 -7 -173 8 -247 30 -94 27 -225 45 -245 34 -28
+-14 -31 -13 -31 15 0 29 -3 30 -31 13 -18 -12 -40 -3 -184 71 -138 71 -175 95
+-234 152 -40 39 -73 80 -77 96 -4 15 -15 45 -25 65 -23 45 -24 87 -4 94 25 10
+17 33 -17 54 -44 26 -84 26 -99 -1 -7 -14 -17 -19 -31 -15 -12 2 -38 -4 -58
+-14 l-37 -19 -33 47 c-52 77 -136 132 -155 102 -3 -5 -19 -10 -35 -10 -16 0
+-32 5 -35 10 -10 16 -30 12 -51 -11z" fill="currentColor" stroke="currentColor" stroke-width="180" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M512,398 C464,398 426,436 426,484 C426,550 512,646 512,646 C512,646 598,550 598,484 C598,436 560,398 512,398 Z" fill="#fff"/><circle cx="512" cy="482" r="36" fill="currentColor"/></svg></span>
+          <span class="tp-nav-name">Şehirle</span>
+          <svg class="tp-nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="tp-nav-sub">
+          <a href="/sehirle/">Oyna</a>
+        </div>
+      </details>
       <div class="tp-nav-sep" role="separator"></div>
       <a class="tp-nav-page" href="/hakkinda.html">Hakkında</a>
       <a class="tp-nav-page" href="/iletisim.html">İletişim</a>
       <a class="tp-nav-page" href="/gizlilik.html">Gizlilik ve Çerezler</a>
       <a class="tp-nav-page" href="/kosullar.html">Kullanım Koşulları</a>
     </nav>
+  <div class="tp-social">
+    <a href="https://x.com/trpuzzlecom" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4-5.6 6.4H3.2l7.3-8.3L2.8 2h6.4l4.4 5.9L18.9 2zm-1.1 16.1h1.7L7.9 3.7H6L17.8 18.1z"/></svg>X: @trpuzzlecom</a>
+    <a href="https://www.instagram.com/trpuzzlecom/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>Instagram: @trpuzzlecom</a>
+    <a href="https://www.tiktok.com/@trpuzzlecom" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 1.7 1.5 3 3.4 3.3v3c-1.3 0-2.5-.4-3.4-1v6.4A5.7 5.7 0 1 1 10 9v3.1a2.6 2.6 0 1 0 3.4 2.5V3h3.2z"/></svg>TikTok: @trpuzzlecom</a>
+  </div>
   </aside>
   <div class="tp-body">
     <div class="tp-ico"><span class="tp-foxmask"></span></div>
     <h1 class="tp-name">Tilkile</h1>
-    <p class="tp-tag">Harfleri tahmin et, gizli kelimeleri çöz.</p>
+    <p class="tp-tag">Harfleri tahmin et, kelimende yoksa yeni kelime eklenir.</p>
     <button type="button" class="tp-play" id="tpPlay">Oyna</button>
     <div class="tp-meta">
       <span id="tpDate"></span><br>
@@ -195,6 +474,22 @@
           <span>Bir daha gösterme</span>
         </label>
         <button class="primary-btn help-ok" data-close>Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Harf onayı (ilk ziyaret): yanlış harf tahtaya yeni kelime eklediği için sorulur -->
+  <div class="modal-overlay" id="confirm-modal" hidden>
+    <div class="modal">
+      <h2>Emin misin?</h2>
+      <p>'<strong id="confirm-letter">A</strong>' harfini denemek istediğine emin misin? Harf kelimelerde yoksa tahtaya <strong>yeni bir kelime eklenir</strong>.</p>
+      <div class="help-footer">
+        <label class="dont-show">
+          <input type="checkbox" id="confirm-dont" />
+          <span>Bir daha gösterme</span>
+        </label>
+        <button class="primary-btn" id="confirm-yes">Evet, dene</button>
+        <button class="secondary-btn" id="confirm-no">Vazgeç</button>
       </div>
     </div>
   </div>
