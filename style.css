@@ -49,8 +49,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
+html {
   height: 100%;
+}
+html, body {
   /* cift dokunmayla yakinlastirmayi engelle (iOS user-scalable=no'yu yok sayabilir) */
   touch-action: manipulation;
 }
@@ -147,6 +149,10 @@ body {
 .app-fold {
   display: flex;
   flex-direction: column;
+  /* body bir flex kapsayici: shrink acik kalirsa oyun blogu ekran boyuna
+     sikistirilir, klavye bloktan tasar ve altindaki tp-bilgi'nin ust cizgisi
+     klavyenin uzerine biner. flex:none tasmayi kokten engeller. */
+  flex: none;
 }
 /* mobilde ust katman ekrani doldurur; klavye alt kenara yaslanir,
    bilgi bolumu (tp-bilgi) alta kayar. Masaustunde mevcut davranis korunur.
@@ -169,15 +175,14 @@ body {
 .status-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  /* genişlik = 5 kare + aralar; ortalanır, böylece sol kenar tahtanın ilk karesiyle hizalanır */
+  justify-content: center;
+  /* genişlik = 5 kare + aralar; kalpler tahtaya göre ortalanır */
   width: 306px;
   max-width: 100%;
   margin: 0 auto;
   padding: 6px 0 10px;
 }
 .lives { display: flex; align-items: center; gap: 8px; }
-.lives-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 .hearts { display: inline-flex; align-items: center; gap: 4px; }
 .heart {
   height: 18px;
