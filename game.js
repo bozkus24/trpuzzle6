@@ -483,14 +483,18 @@
     return buildShareTextFrom(`Tilkile #${state.puzzleNo}`, state.status, state.words.length, state.wrong);
   }
 
+  const PAYLAS_ADRES = "https://trpuzzle.com/tilkile/";
   async function share(customText) {
-    const text = customText || buildShareText();
+    /* Adres metnin icinde, kendi satirinda: her uygulamada alt satira duser */
+    const text = (customText || buildShareText()) + "\n\n" + PAYLAS_ADRES;
     try {
       if (navigator.share) {
-        await navigator.share({ text });
+        await navigator.share({ title: "Tilkile", text });
         return;
       }
-    } catch (e) {}
+    } catch (e) {
+      if (e && e.name === "AbortError") return;   /* kullanici iptal etti */
+    }
     try {
       await navigator.clipboard.writeText(text);
       toast("Sonuç kopyalandı!");
@@ -696,7 +700,9 @@
     const savedTheme = (function () {
       try { return localStorage.getItem("foximax-theme"); } catch (e) { return null; }
     })();
-    applyTheme(savedTheme === "dark" ? "dark" : "light");
+    /* kayitli tercih yoksa cihaz temasina uy */
+    applyTheme((savedTheme === "dark" || savedTheme === "light") ? savedTheme
+      : ((window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"));
 
     let kbPref = null;
     try { kbPref = localStorage.getItem("foximax-keyboard"); } catch (e) {}
