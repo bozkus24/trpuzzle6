@@ -383,12 +383,18 @@
 
   function statsSummaryHTML(s) {
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
+    // Her istatistik kendi kutucugunda; dort kutu tek satirda.
+    const kutu = (deger, etiket) =>
+      `<div class="stat-box"><div class="stat-num">${deger}</div><div class="stat-cap">${etiket}</div></div>`;
     return (
       '<div class="stats-lines">' +
       '<div class="stats-mode">GENEL İSTATİSTİKLER</div>' +
-      `<p>Oynanan: <b>${s.played}</b> oyun · Kazanma: <b>%${winPct}</b></p>` +
-      `<p>Güncel seri: <b>${s.currentStreak}</b> · En iyi seri: <b>${s.maxStreak}</b></p>` +
-      "</div>"
+      '<div class="stat-boxes">' +
+      kutu(s.played, "Oynanan") +
+      kutu(winPct, "Kazanma %") +
+      kutu(s.currentStreak, "Güncel seri") +
+      kutu(s.maxStreak, "En iyi seri") +
+      "</div></div>"
     );
   }
 
@@ -473,11 +479,10 @@
 
   // ---- Paylaşım ----
   function buildShareTextFrom(title, status, wordCount, wrong) {
-    const result = status === "won" ? "çözüldü" : "kaybedildi";
     let bar = "";
     const remaining = MAX_WRONG - wrong;
     for (let i = 0; i < MAX_WRONG; i++) bar += i < remaining ? "■" : "□";
-    return `${title} · ${result}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
+    return `${title}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
   }
   function buildShareText() {
     return buildShareTextFrom(`Tilkile #${state.puzzleNo}`, state.status, state.words.length, state.wrong);
@@ -557,11 +562,6 @@
   }
 
   // ---- Mod (üstteki "Oyun modu" panelinden) ----
-  function updateModeUI() {
-    document.querySelectorAll(".mode-opt").forEach((b) =>
-      b.classList.toggle("active", b.dataset.mode === state.mode)
-    );
-  }
   function updateModeButton() {
     const b = $("#mode-btn");
     if (b) b.innerHTML = state.mode === "daily" ? ICONS.calendar : ICONS.archive;
@@ -579,13 +579,8 @@
     el.textContent = `Arşiv · ${d.getDate()} ${TR_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
   function syncModeUI() {
-    updateModeUI();
     updateModeButton();
     updateInfoLine();
-  }
-  function setMode() {
-    startGame(); // bugünün günlük bulmacası
-    syncModeUI();
   }
 
   // ---- Arşiv (geçmiş günlük bulmacalar) ----
@@ -611,7 +606,6 @@
         startGame(parseInt(b.dataset.pno, 10));
         syncModeUI();
         closeModal($("#archive-modal"));
-        closeModal($("#mode-modal"));
       })
     );
     openModal("#archive-modal");
@@ -627,10 +621,8 @@
       if (kb) kb.checked = keyboardShown();
       openModal("#settings-modal");
     });
-    $("#mode-btn").addEventListener("click", () => {
-      updateModeUI();
-      openModal("#mode-modal");
-    });
+    /* Mod secimi kaldirildi: dugme dogrudan arsivi acar. */
+    $("#mode-btn").addEventListener("click", () => showArchive());
     $("#share-btn").addEventListener("click", () => share());
     $("#archive-back-btn").addEventListener("click", () => {
       closeModal($("#end-modal"));
@@ -643,18 +635,6 @@
       try { localStorage.setItem("foximax-keyboard", show ? "1" : "0"); } catch (err) {}
       applyKeyboard(show);
     });
-    document.querySelectorAll(".mode-opt").forEach((t) =>
-      t.addEventListener("click", () => {
-        if (t.dataset.action === "archive") {
-          closeModal($("#mode-modal"));
-          showArchive();
-        } else {
-          setMode();
-          closeModal($("#mode-modal"));
-        }
-      })
-    );
-
     document.querySelectorAll("[data-close]").forEach((btn) =>
       btn.addEventListener("click", () => closeModal(btn.closest(".modal-overlay")))
     );

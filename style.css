@@ -1,5 +1,14 @@
 
 :root {
+  /* Karo boyu: canlar ile klavye arasinda HER ZAMAN 8 kelime satirlik yer
+     kalsin, ama klavye de ekrana sigsin. 370px = ust bar + canlar + mesaj +
+     klavye + dolgu payi. Genislik siniri da 5 karo + aralar icin. */
+  /* --krom: karo disinda kalan her sey (ust bar 63 + canlar 34 + mesaj 22 +
+     oyun dolgusu 28 + tahta dolgusu/araliklari 47 + klavye). Klavye yuksekligi
+     ekran yuksekligine gore basamakli degistigi icin --krom da ayni
+     basamaklari izler; yoksa uzun ekranlarda klavye tasiyordu. */
+  --krom: 420px;                 /* klavye 222 */
+  --karo: clamp(28px, min(calc((100svh - var(--krom)) / 8), calc((100vw - 44px) / 5)), 58px);
   --bg: #f3f5f1;
   --panel: #ffffff;
   --text: #262b24;
@@ -201,7 +210,8 @@ body {
   align-items: center;
   overflow-y: auto;
   padding: 6px 0;
-  min-height: 120px;
+  /* 8 satir: 8 karo + 7 aralik(5px) + dolgu(12px) */
+  min-height: calc(8 * var(--karo) + 47px);
 }
 .word-row {
   display: flex;
@@ -213,9 +223,10 @@ body {
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 .tile {
-  width: 58px;
-  height: 58px;
+  width: var(--karo);
+  height: var(--karo);
   border-radius: 2px;
+  font-size: calc(var(--karo) * 0.42);
   background: var(--tile-empty);
   border: 2px solid var(--tile-border);   /* renkten bağımsız sabit gri çerçeve */
   position: relative;
@@ -251,12 +262,8 @@ body {
   .word-row.drop, .tile-face.flip { animation: none; }
 }
 @media (max-width: 400px) {
-  .tile { width: 52px; height: 52px; font-size: 1.55rem; }
-  .status-row { width: 276px; }   /* 5×52 + 4×4 */
 }
 @media (max-width: 340px) {
-  .tile { width: 44px; height: 44px; font-size: 1.3rem; }
-  .status-row { width: 236px; }   /* 5×44 + 4×4 */
 }
 
 .message {
@@ -307,13 +314,16 @@ body.kb-hidden .keyboard { display: none; }
 }
 /* kısa ekran (yükseklik az): klavyenin ekrandan taşmaması için küçült */
 @media (max-height: 760px) {
+  :root { --krom: 390px; }
   .key { height: 56px; }
 }
 @media (max-height: 680px) {
+  :root { --krom: 362px; }
   .key { height: 48px; font-size: 1.05rem; }
   .keyboard { gap: 7px; }
 }
 @media (max-height: 600px) {
+  :root { --krom: 338px; }
   .key { height: 42px; font-size: 0.95rem; }
   .keyboard { gap: 5px; padding-top: 4px; }
 }
@@ -607,21 +617,47 @@ body.kb-hidden .keyboard { display: none; }
 .stats-lines p { margin-bottom: 6px; font-size: 0.95rem; }
 .stats-lines b { color: var(--text); font-variant-numeric: tabular-nums; }
 
-.win-record {
+/* Her istatistik ayri bir kutucukta; dar ekranda 2x2'ye duser. */
+.stat-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.stat-box {
+  background: var(--tile-empty);
   border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 14px 14px 12px;
-  margin-top: 4px;
+  border-radius: 10px;
+  padding: 9px 4px 8px;
+  text-align: center;
+  min-width: 0;
+}
+.stat-num {
+  font-size: 1.5rem; font-weight: 800; line-height: 1.1;
+  color: var(--text); font-variant-numeric: tabular-nums;
+}
+.stat-cap {
+  margin-top: 3px; font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.3px; color: var(--muted); line-height: 1.25;
+}
+@media (max-width: 360px) {
+  .stat-boxes { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Puan dagilimi ayri bir kutu degil, sonuc ekraninin parcasi; sola hizali. */
+.win-record {
+  border: 0;
+  padding: 0;
+  margin-top: 14px;
 }
 .wr-title {
-  text-align: center; font-weight: 800; font-size: 0.8rem;
+  text-align: left; font-weight: 800; font-size: 0.8rem;
   letter-spacing: 1.2px; color: var(--muted);
   margin-bottom: 12px;
 }
 .wr-rows { display: flex; flex-direction: column; gap: 6px; }
 .wr-row { display: flex; align-items: center; gap: 8px; }
 .wr-idx {
-  width: 14px; text-align: right; font-weight: 700;
+  width: 14px; text-align: left; font-weight: 700;
   color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums;
 }
 .wr-bar-wrap { flex: 1; display: flex; }
