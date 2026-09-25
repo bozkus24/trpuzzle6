@@ -1,14 +1,5 @@
 
 :root {
-  /* Karo boyu: canlar ile klavye arasinda HER ZAMAN 8 kelime satirlik yer
-     kalsin, ama klavye de ekrana sigsin. 370px = ust bar + canlar + mesaj +
-     klavye + dolgu payi. Genislik siniri da 5 karo + aralar icin. */
-  /* --krom: karo disinda kalan her sey (ust bar 63 + canlar 34 + mesaj 22 +
-     oyun dolgusu 28 + tahta dolgusu/araliklari 47 + klavye). Klavye yuksekligi
-     ekran yuksekligine gore basamakli degistigi icin --krom da ayni
-     basamaklari izler; yoksa uzun ekranlarda klavye tasiyordu. */
-  --krom: 420px;                 /* klavye 222 */
-  --karo: clamp(28px, min(calc((100svh - var(--krom)) / 8), calc((100vw - 44px) / 5)), 58px);
   --bg: #f3f5f1;
   --panel: #ffffff;
   --text: #262b24;
@@ -85,7 +76,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 6px 14px;
   border-bottom: 1px solid var(--border);
 }
 .brand {
@@ -154,32 +145,26 @@ body {
 .icon-btn:hover { background: var(--key-bg); }
 #help-btn { font-weight: 800; }
 
-/* ---- Ust katman (oyun alani): mobilde tam ekran yuksekligi ---- */
+/* Oyun tek ekran kaplar; kalan tahta alani sekiz satira paylastirilir.
+   svh adres cubugu hareketlerinde karolarin boyunun degismesini onler. */
 .app-fold {
   display: flex;
   flex-direction: column;
-  /* body bir flex kapsayici: shrink acik kalirsa oyun blogu ekran boyuna
-     sikistirilir, klavye bloktan tasar ve altindaki tp-bilgi'nin ust cizgisi
-     klavyenin uzerine biner. flex:none tasmayi kokten engeller. */
   flex: none;
+  height: 100svh;
 }
-/* mobilde ust katman ekrani doldurur; klavye alt kenara yaslanir,
-   bilgi bolumu (tp-bilgi) alta kayar. Masaustunde mevcut davranis korunur.
-   100svh (dvh degil): adres cubugu acilip kapanirken yukseklik degismez,
-   boylece oyun blogu sabit kalir, kaydirirken ziplamaz. */
-@media (max-width: 640px) {
-  .app-fold { min-height: 100svh; }
-}
+.topbar, .puzzle-info { flex-shrink: 0; }
 
 /* ---- Game area ---- */
 .game {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 14px 14px;
+  padding: 8px 14px;
+  min-height: 0;
 }
 @media (max-width: 640px) {
-  .game { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  .game { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
 }
 .status-row {
   display: flex;
@@ -189,7 +174,8 @@ body {
   width: 306px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 6px 0 10px;
+  flex-shrink: 0;
+  padding: 4px 0 6px;
 }
 .lives { display: flex; align-items: center; gap: 8px; }
 .hearts { display: inline-flex; align-items: center; gap: 4px; }
@@ -208,12 +194,12 @@ body {
   flex-direction: column;
   gap: 5px;
   align-items: center;
-  overflow-y: auto;
   padding: 6px 0;
-  /* 8 satir: 8 karo + 7 aralik(5px) + dolgu(12px) */
-  min-height: calc(8 * var(--karo) + 47px);
+  min-height: 0;
+  container-type: size;
 }
 .word-row {
+  flex-shrink: 0;
   display: flex;
   gap: 4px;
 }
@@ -223,6 +209,10 @@ body {
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 .tile {
+  /* cqh/cqw tahtanin dolgu haricindeki gercek boyutudur.
+     Sekiz kelime, yedi dikey ve dort yatay aralik her zaman sigar. */
+  --karo: min(72px, calc((100cqh - 35px) / 8), calc((100cqw - 16px) / 5));
+  flex-shrink: 0;
   width: var(--karo);
   height: var(--karo);
   border-radius: 2px;
@@ -231,7 +221,6 @@ body {
   border: 2px solid var(--tile-border);   /* renkten bağımsız sabit gri çerçeve */
   position: relative;
   overflow: hidden;
-  font-size: 1.8rem;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;
@@ -267,6 +256,7 @@ body {
 }
 
 .message {
+  flex-shrink: 0;
   text-align: center;
   min-height: 22px;
   font-weight: 700;
@@ -276,6 +266,7 @@ body {
 
 /* ---- Keyboard ---- */
 .keyboard {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 9px;
@@ -290,7 +281,7 @@ body {
   flex: 1;
   max-width: 52px;
   min-width: 0;
-  height: 66px;
+  height: 54px;
   border: none;
   border-radius: 2px;
   background: var(--key-bg);
@@ -314,16 +305,13 @@ body.kb-hidden .keyboard { display: none; }
 }
 /* kısa ekran (yükseklik az): klavyenin ekrandan taşmaması için küçült */
 @media (max-height: 760px) {
-  :root { --krom: 390px; }
-  .key { height: 56px; }
+  .key { height: 48px; }
 }
 @media (max-height: 680px) {
-  :root { --krom: 362px; }
-  .key { height: 48px; font-size: 1.05rem; }
+  .key { height: 44px; font-size: 1.05rem; }
   .keyboard { gap: 7px; }
 }
 @media (max-height: 600px) {
-  :root { --krom: 338px; }
   .key { height: 42px; font-size: 0.95rem; }
   .keyboard { gap: 5px; padding-top: 4px; }
 }
