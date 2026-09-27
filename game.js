@@ -62,7 +62,7 @@
   }
 
   function localMidnight(d) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
   }
   function puzzleNumber(d) {
     return Math.floor((localMidnight(d) - localMidnight(LAUNCH)) / 86400000) + 1;
@@ -164,7 +164,7 @@
   // tohumu ve numaraya göre kayıt anahtarını kullanır.
   function startGame(puzzleNo, opts) {
     opts = opts || {};
-    const todayNo = puzzleNumber(new Date());
+    const todayNo = puzzleNumber(TrPuzzleClock.calendar());
     if (puzzleNo == null) puzzleNo = todayNo;
     state.puzzleNo = puzzleNo;
     state.mode = puzzleNo === todayNo ? "daily" : "archive";
@@ -419,7 +419,7 @@
   }
 
   function showStats() {
-    const pno = puzzleNumber(new Date());
+    const pno = puzzleNumber(TrPuzzleClock.calendar());
     const daily = loadSaved(puzzleKey(pno));
     const s = getStats();
 
@@ -522,7 +522,7 @@
     const el = $("#countdown");
     function tick() {
       const now = new Date();
-      const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const next = new Date(now.getTime() + TrPuzzleClock.remaining(now));
       let diff = Math.max(0, next - now);
       const h = String(Math.floor(diff / 3600000)).padStart(2, "0");
       const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
@@ -585,7 +585,7 @@
 
   // ---- Arşiv (geçmiş günlük bulmacalar) ----
   function showArchive() {
-    const todayNo = puzzleNumber(new Date());
+    const todayNo = puzzleNumber(TrPuzzleClock.calendar());
     const grid = $("#archive-grid");
     let html = "";
     for (let n = todayNo; n >= 1; n--) {
