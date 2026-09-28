@@ -752,8 +752,34 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     Kesme: ['#helpModal .sheet', '#helpGotIt', ['Şeklin içinden geçen bir çizgi çek.','Hedef iki eşit parça: 50:50.','55:45 veya daha dengeli kesimler kazanır.'], '50 │ 50'],
     'Bağla': ['#perdeYardim .modal', '#btnYardimAnladim', ['Ortak bağı olan dört kelimeyi seç.','Onayla; doğru grup birlikte açılır.','Dört grubu bul, dört hata hakkını koru.'], 'ELMA · ARMUT · ERİK · NAR']
   };
+  // Only play surfaces suppress selection; instructions and text inputs remain selectable.
+  const playSurface = '#board, .board, #tahta, #izgara, #keyboard, .keyboard, #klavye, .alpha, .map-wrap, .dragclone, .tp-demo, button, [role="button"]';
+  function isPlayGesture(target) {
+    return target instanceof Element &&
+      !target.closest('input, textarea, [contenteditable]:not([contenteditable="false"])') &&
+      !!target.closest(playSurface);
+  }
+  // Native text/image dragging must not compete with tile pointer handlers.
+  ['selectstart', 'dragstart'].forEach(type => {
+    document.addEventListener(type, event => {
+      if (isPlayGesture(event.target)) event.preventDefault();
+    });
+  });
   const style = document.createElement('style');
   style.textContent = `
+    :is(${playSurface}), :is(${playSurface}) * {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    :is(${playSurface}) img, :is(${playSurface}) svg { -webkit-user-drag: none; }
+    :is(${playSurface}) input, :is(${playSurface}) textarea,
+    :is(${playSurface}) [contenteditable]:not([contenteditable="false"]) {
+      -webkit-user-select: text;
+      user-select: text;
+      -webkit-touch-callout: default;
+    }
+
     .tp-quick { text-align:left; font:15px/1.55 system-ui,sans-serif; color:inherit; }
     .tp-quick ol { padding-left:22px; margin:14px 0; }
     .tp-quick li { margin:8px 0; }
