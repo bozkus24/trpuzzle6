@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<script src="/assets/game-remote.js"></script>
+<!-- game-security-start -->
+<script>
+/* Kayıtlar güvenilir girdi değildir. Eski geçerli kayıtları koruyarak türleri doğrula. */
+(function () {
+  'use strict';
+  const object = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  const escape = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function stats(value, fields, buckets, distribution = 'dist') {
+    const result = {...object(value)};
+    fields.forEach(key => result[key] = count(result[key]));
+    if (buckets) {
+      const source = object(result[distribution]);
+      result[distribution] = Object.fromEntries(buckets.map(key => [key, count(source[key])]));
+    }
+    return result;
+  }
+  window.TrPuzzleSecurity = Object.freeze({object, count, escape, stats});
+})();
+</script>
+<!-- game-security-end -->
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#e8862a" />
@@ -132,6 +155,8 @@ html.tp-splash-acik{background:#fff}
 
 </script>
 <!-- game-clock-end -->
+<style>#tpPlay:not([data-progress-ready]){visibility:hidden}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7993571496408496" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="tp-splash">
@@ -355,6 +380,107 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
             <h1 class="tp-name">Tilkile</h1>
     <p class="tp-tag">Harfleri tahmin et, kelimende yoksa yeni kelime eklenir.</p>
     <button type="button" class="tp-play" id="tpPlay">Oyna</button>
+<!-- TRPUZZLE-PROGRESS-START -->
+<script>
+/* Üretilen dosya: trpuzzlemain/tools/sync_splash_progress.py */
+(function () {
+  "use strict";
+  function readProgress(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    } catch (e) { return {}; }
+  }
+
+  function hasGuesses(value) {
+    return Array.isArray(value) && value.length > 0;
+  }
+
+  function dailyProgress(now, selectedLevel) {
+    const tr = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+    const year = tr.getUTCFullYear(), month = tr.getUTCMonth(), day = tr.getUTCDate();
+    const date = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    const dayId = Math.floor(Date.UTC(year, month, day) / 86400000);
+    const puzzleNo = dayId - Date.UTC(2026, 9, 3) / 86400000 + 1;
+    const midnight = Date.UTC(year, month, day);
+    const foxNo = Math.floor((midnight - Date.UTC(2026, 7, 1)) / 86400000) + 1;
+    const aralaDay = Math.round((midnight - Date.UTC(2026, 0, 1)) / 86400000);
+
+    const harfle = readProgress("trw-" + date);
+    const settings = readProgress("word500tr.ayarlar");
+    if (selectedLevel) settings.seviye = selectedLevel;
+    const level = ["kolay", "standart", "zor"].includes(settings.seviye) ? settings.seviye : "standart";
+    // Harf500 açılışta son seçilen seviyeyi yükler.
+    const harf500 = readProgress("word500tr.oyun." + level + "." + date);
+    const baklava = readProgress("petek-progress-v1")[dayId] || {};
+    const tilkile = readProgress("foximax-daily-" + foxNo);
+    const bagla = puzzleNo >= 1 ? readProgress("baglantilar.2026-10-03.gunluk." + puzzleNo) : {};
+    const sehirle = readProgress("iller-globle:daily:" + date);
+    const oldArala = readProgress("aradle_day_v1");
+    const arala = readProgress("aradle_days_v2")[aralaDay] ||
+      (oldArala.day === aralaDay ? oldArala : {});
+
+    const started = {
+      Harfle: hasGuesses(harfle.guesses) && !harfle.done && !harfle.win,
+      Harf500: harf500.surum === 1 && hasGuesses(harf500.gecmis) && !harf500.bitti && !harf500.kazandi,
+      Baklava: baklava.phase === "play" && typeof baklava.swapsLeft === "number" &&
+        baklava.swapsLeft > 0 && baklava.swapsLeft < 15,
+      Arala: typeof arala.steps === "number" && arala.steps > 0 && !arala.done && !arala.lost && !arala.g,
+      Tilkile: tilkile.status === "playing" && hasGuesses(tilkile.guessed),
+      // Kesme tek hamlede biter; kaydedilmiş, yarım kalmış bir turu yoktur.
+      Kesme: false,
+      "Bağla": bagla.durum === "oyunda" && hasGuesses(bagla.tahminler),
+      "Şehirle": hasGuesses(sehirle.guesses) && !sehirle.won && !sehirle.gaveUp
+    };
+    // Tüm günlük kayıtlar Türkiye tarihini kullanır; Kesme tek hamlede biter.
+    const kesme = readProgress("kesme2-day-" + date);
+    const aralaResult = readProgress("aradle_result_v1")[aralaDay];
+    const completed = {
+      Harfle: harfle.done === true || harfle.win === true,
+      Harf500: harf500.surum === 1 && (harf500.bitti === true || harf500.kazandi === true),
+      Baklava: baklava.phase === "win" || baklava.phase === "lose",
+      Arala: arala.done === true || arala.lost === true || arala.g === true ||
+        (typeof aralaResult === "number" && (aralaResult === -1 || (aralaResult >= 1 && aralaResult <= 5))),
+      Tilkile: tilkile.status === "won" || tilkile.status === "lost",
+      Kesme: Array.isArray(kesme.cut) && kesme.cut.length === 4,
+      "Bağla": bagla.durum === "kazandi" || bagla.durum === "kaybetti",
+      "Şehirle": sehirle.won === true || sehirle.gaveUp === true
+    };
+    const states = {};
+    Object.keys(started).forEach(function (game) {
+      states[game] = completed[game] ? "completed" : started[game] ? "started" : "new";
+    });
+    return states;
+  }
+
+
+  window.TrPuzzleProgress = dailyProgress;
+  function refresh() {
+    const button = document.getElementById("tpPlay");
+    const title = document.querySelector("#tp-splash .tp-name");
+    if (!button || !title) return;
+    const selected = document.querySelector('#tpSeg [data-seviye][aria-checked="true"]');
+    const state = dailyProgress(new Date(), selected && selected.getAttribute("data-seviye"))[title.textContent.trim()];
+    button.textContent = state === "completed" ? "Sonucu Gör" : state === "started" ? "Devam Et" : "Oyna";
+    button.setAttribute("data-progress-ready", "");
+  }
+  refresh();
+  document.addEventListener("DOMContentLoaded", refresh);
+  window.addEventListener("pageshow", refresh);
+  window.addEventListener("storage", refresh);
+  window.addEventListener("focus", refresh);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+  const segment = document.getElementById("tpSeg");
+  if (segment) {
+    segment.addEventListener("click", refresh);
+    segment.addEventListener("keydown", refresh);
+  }
+  setInterval(function () { if (!document.hidden) refresh(); }, 60000);
+
+})();
+</script>
+<!-- TRPUZZLE-PROGRESS-END -->
+
     <div class="tp-meta">
       <span id="tpDate"></span><br>
       <span id="tpNo"></span>
@@ -553,7 +679,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
   </ul>
   <h2>Sık sorulan sorular</h2>
   <p class="tp-sss"><strong>Günlük bulmaca ne zaman yenilenir?</strong> Her gün Türkiye saatiyle 00.00'de; geçmiş günler Arşiv modunda oynanabilir.</p>
-  <p class="tp-sss"><strong>İstatistiklerim nerede?</strong> Serilerin ve oyun geçmişin yalnızca kendi cihazında saklanır. Üyelik yok, veri gönderimi yok.</p>
+  <p class="tp-sss"><strong>İstatistiklerim nerede?</strong> İlerlemen ve istatistiklerin tarayıcında saklanır; hesap gerekmez. Tahminlerin ve hamlelerin, kontrol edilmek üzere oyun sunucusuna gönderilir.</p>
 </section>
 
 <footer class="tp-footer">
@@ -604,7 +730,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     }
   }
   tpUstSerit(!s.hidden);
-  try{ if((location.hash||"")==="#arsiv"){ s.hidden=true; tpUstSerit(false); var _tpArsiv=function(){ var el=document.querySelector('[data-action="archive"]'); if(el){ el.click(); } }; if(document.readyState==="complete"){ setTimeout(_tpArsiv,50); } else { window.addEventListener("load",function(){ setTimeout(_tpArsiv,80); }); } } }catch(_e){}
+  try{ if((location.hash||"")==="#arsiv"){ s.hidden=true; tpUstSerit(false); var _tpArsiv=function(){ var el=document.querySelector('#mode-btn'); if(el){ el.click(); } }; if(document.readyState==="complete"){ setTimeout(_tpArsiv,50); } else { window.addEventListener("load",function(){ setTimeout(_tpArsiv,80); }); } } }catch(_e){}
   /* Ara ekranın kaydırılmasını engelle -- AMA ekranın sol/sağ kenarından
      başlayan hareketi serbest bırak: iOS'ta geri/ileri kaydırma jesti orada
      başlar ve touchmove'da preventDefault çağrılırsa iptal olur. */
@@ -637,110 +763,13 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
   if(b) b.addEventListener("click",function(){ s.hidden=true; tpUstSerit(false); });
 })();
 </script>
-<!-- TRPUZZLE-PROGRESS-START -->
-<script>
-/* Üretilen dosya: trpuzzlemain/tools/sync_splash_progress.py */
-(function () {
-  "use strict";
-  function readProgress(key) {
-    try {
-      const value = JSON.parse(localStorage.getItem(key));
-      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
-    } catch (e) { return {}; }
-  }
 
-  function hasGuesses(value) {
-    return Array.isArray(value) && value.length > 0;
-  }
-
-  function dailyProgress(now, selectedLevel) {
-    const tr = new Date(now.getTime() + 3 * 60 * 60 * 1000);
-    const year = tr.getUTCFullYear(), month = tr.getUTCMonth(), day = tr.getUTCDate();
-    const date = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
-    const dayId = Math.floor(Date.UTC(year, month, day) / 86400000);
-    const puzzleNo = dayId - Date.UTC(2026, 7, 1) / 86400000 + 1;
-    const midnight = Date.UTC(year, month, day);
-    const foxNo = Math.floor((midnight - Date.UTC(2026, 7, 1)) / 86400000) + 1;
-    const aralaDay = Math.round((midnight - Date.UTC(2026, 0, 1)) / 86400000);
-
-    const harfle = readProgress("trw-" + date);
-    const settings = readProgress("word500tr.ayarlar");
-    if (selectedLevel) settings.seviye = selectedLevel;
-    const level = ["kolay", "standart", "zor"].includes(settings.seviye) ? settings.seviye : "standart";
-    // Harf500 açılışta son seçilen seviyeyi yükler.
-    const harf500 = readProgress("word500tr.oyun." + level + "." + date);
-    const baklava = readProgress("petek-progress-v1")[dayId] || {};
-    const tilkile = readProgress("foximax-daily-" + foxNo);
-    const bagla = readProgress("baglantilar.gunluk." + puzzleNo);
-    const sehirle = readProgress("iller-globle:daily:" + date);
-    const oldArala = readProgress("aradle_day_v1");
-    const arala = readProgress("aradle_days_v2")[aralaDay] ||
-      (oldArala.day === aralaDay ? oldArala : {});
-
-    const started = {
-      Harfle: hasGuesses(harfle.guesses) && !harfle.done && !harfle.win,
-      Harf500: harf500.surum === 1 && hasGuesses(harf500.gecmis) && !harf500.bitti && !harf500.kazandi,
-      Baklava: baklava.phase === "play" && typeof baklava.swapsLeft === "number" &&
-        baklava.swapsLeft > 0 && baklava.swapsLeft < 15,
-      Arala: typeof arala.steps === "number" && arala.steps > 0 && !arala.done && !arala.lost && !arala.g,
-      Tilkile: tilkile.status === "playing" && hasGuesses(tilkile.guessed),
-      // Kesme tek hamlede biter; kaydedilmiş, yarım kalmış bir turu yoktur.
-      Kesme: false,
-      "Bağla": bagla.durum === "oyunda" && hasGuesses(bagla.tahminler),
-      "Şehirle": hasGuesses(sehirle.guesses) && !sehirle.won && !sehirle.gaveUp
-    };
-    // Tüm günlük kayıtlar Türkiye tarihini kullanır; Kesme tek hamlede biter.
-    const kesme = readProgress("kesme2-day-" + date);
-    const aralaResult = readProgress("aradle_result_v1")[aralaDay];
-    const completed = {
-      Harfle: harfle.done === true || harfle.win === true,
-      Harf500: harf500.surum === 1 && (harf500.bitti === true || harf500.kazandi === true),
-      Baklava: baklava.phase === "win" || baklava.phase === "lose",
-      Arala: arala.done === true || arala.lost === true || arala.g === true ||
-        (typeof aralaResult === "number" && (aralaResult === -1 || (aralaResult >= 1 && aralaResult <= 5))),
-      Tilkile: tilkile.status === "won" || tilkile.status === "lost",
-      Kesme: Array.isArray(kesme.cut) && kesme.cut.length === 4,
-      "Bağla": bagla.durum === "kazandi" || bagla.durum === "kaybetti",
-      "Şehirle": sehirle.won === true || sehirle.gaveUp === true
-    };
-    const states = {};
-    Object.keys(started).forEach(function (game) {
-      states[game] = completed[game] ? "completed" : started[game] ? "started" : "new";
-    });
-    return states;
-  }
-
-
-  window.TrPuzzleProgress = dailyProgress;
-  function refresh() {
-    const button = document.getElementById("tpPlay");
-    const title = document.querySelector("#tp-splash .tp-name");
-    if (!button || !title) return;
-    const selected = document.querySelector('#tpSeg [data-seviye][aria-checked="true"]');
-    const state = dailyProgress(new Date(), selected && selected.getAttribute("data-seviye"))[title.textContent.trim()];
-    button.textContent = state === "completed" ? "Sonucu Gör" : state === "started" ? "Devam Et" : "Oyna";
-  }
-  refresh();
-  window.addEventListener("pageshow", refresh);
-  window.addEventListener("storage", refresh);
-  window.addEventListener("focus", refresh);
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
-  const segment = document.getElementById("tpSeg");
-  if (segment) {
-    segment.addEventListener("click", refresh);
-    segment.addEventListener("keydown", refresh);
-  }
-  setInterval(function () { if (!document.hidden) refresh(); }, 60000);
-
-})();
-</script>
-<!-- TRPUZZLE-PROGRESS-END -->
 <!-- game-experience-start -->
 <script>
 /* Oyunların ortak kısa anlatımı ve sonuçtan sonraki gezinme. */
 (function () {
-  const names = ['Harfle','Harf500','Baklava','Arala','Tilkile','Kesme','Bağla','Şehirle'];
-  const paths = ['harfle','harf500','baklava','arala','tilkile','kesme','bagla','sehirle'];
+  const names = ['Harfle','Baklava','Bağla','Kesme','Tilkile','Arala','Şehirle','Harf500'];
+  const paths = ['harfle','baklava','bagla','kesme','tilkile','arala','sehirle','harf500'];
   const title = document.querySelector('#tp-splash .tp-name');
   const game = title && title.textContent.trim();
   const configs = {
@@ -884,7 +913,8 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
       const message=next?'Bugün bir bulmaca daha?':'Harika, bugünkü sekiz oyunu tamamladın!';
       if(section.firstChild.textContent!==message)section.firstChild.textContent=message;
       const link=section.querySelector('.tp-next-game');
-      if(link.hidden!==!next)link.hidden=!next;
+      link.hidden=false;
+      if(!next) { link.textContent='Arşivden oyna'; link.setAttribute('href','/'+(game==='Şehirle'?'harfle':paths[names.indexOf(game)])+'/#arsiv'); }
       if(next) { const label=next+' · '+(progress[next]==='started'?'Devam Et':'Oyna');if(link.textContent!==label)link.textContent=label;const href='/'+paths[names.indexOf(next)]+'/';if(link.getAttribute('href')!==href)link.setAttribute('href',href); }
     });
   }

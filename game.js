@@ -86,31 +86,13 @@
   // Not: Yeni kelimeler önceden denenmiş (çıkmamış) harfleri içerebilir; bunlar
   // ızgarada doğrudan gri olarak gösterilir. Yalnızca yinelenen ya da tamamen
   // önceden tahmin edilmiş (eklenir eklenmez çözülmüş olacak) kelimeler atlanır.
-  function pickNextWord() {
-    const N = WORDS.length;
-    for (let scanned = 0; scanned < N; scanned++) {
-      const idx = state.order[state.ptr % N];
-      state.ptr++;
-      const w = WORDS[idx];
-      if (state.words.includes(w)) continue;
-      let allGuessed = true;
-      for (const ch of w) {
-        if (!state.guessed.has(ch)) { allGuessed = false; break; }
-      }
-      if (allGuessed) continue;
-      return w;
-    }
-    return null; // teorik olarak ulaşılmaz
-  }
-
   // ---- Kayıt/yükleme ----
   // Her bulmaca (bugünkü günlük veya arşivden bir gün) numarasına göre saklanır.
   function puzzleKey(pno) { return "foximax-daily-" + pno; }
 
   function saveGame() {
     const data = {
-      order: state.order,
-      ptr: state.ptr,
+      token: remoteSession && remoteSession.token,
       words: state.words,
       guessed: [...state.guessed],
       absent: [...state.absent],
@@ -127,14 +109,19 @@
     try {
       const raw = localStorage.getItem(key);
       if (!raw) return null;
-      return JSON.parse(raw);
+      const data = JSON.parse(raw);
+      if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+      if (key.startsWith("foximax-daily-")) {
+        if (!Array.isArray(data.words) || !data.words.length || !data.words.every(w=>typeof w==="string"&&/^[A-ZÇĞİÖŞÜ_]{5}$/.test(w)) || !["guessed","absent"].every(k=>Array.isArray(data[k])&&data[k].length<=ALPHABET.size&&data[k].every(c=>ALPHABET.has(c))) || !Number.isInteger(data.wrong) || data.wrong<0 || data.wrong>MAX_WRONG || !["playing","won","lost"].includes(data.status)) return null;
+      }
+      return data;
     } catch (e) { return null; }
   }
 
   // ---- İstatistik (yalnızca günlük; arşiv oynayışları seriyi etkilemez) ----
   function getStats() {
     const def = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, lastWinNo: null, dist: {} };
-    const s = Object.assign(def, loadSaved("foximax-stats") || {});
+    const s = TrPuzzleSecurity.stats(Object.assign(def, loadSaved("foximax-stats") || {}), ["played","wins","currentStreak","maxStreak"], [1,2,3,4,5,6,7,8]);
     if (!s.dist) s.dist = {};
     return s;
   }
@@ -162,30 +149,24 @@
   // puzzleNo verilmezse bugünün günlük bulmacası oynanır. Geçmiş bir numara
   // verilirse "arşiv" modunda o gün oynanır. Her ikisi de aynı deterministik
   // tohumu ve numaraya göre kayıt anahtarını kullanır.
-  function startGame(puzzleNo, opts) {
-    opts = opts || {};
-    const todayNo = puzzleNumber(TrPuzzleClock.calendar());
-    if (puzzleNo == null) puzzleNo = todayNo;
-    state.puzzleNo = puzzleNo;
-    state.mode = puzzleNo === todayNo ? "daily" : "archive";
-
-    const saved = loadSaved(puzzleKey(puzzleNo));
-    if (saved && !opts.fresh) { restoreFrom(saved); return; }
-
-    state.seed = 0x9e3779b1 ^ puzzleNo;
-    const rng = mulberry32(state.seed);
-    state.order = shuffledIndices(WORDS.length, rng);
-    state.ptr = 0;
-    state.words = [];
-    state.guessed = new Set();
-    state.absent = new Set();
-    state.wrong = 0;
-    state.status = "playing";
-
-    const first = pickNextWord();
-    state.words.push(first);
-    saveGame();
-    render();
+  let remoteSession=null,remotePending=false,remoteRequest=0;
+  async function startGame(puzzleNo,opts){
+    opts=opts||{};const request=++remoteRequest;
+    const todayNo=puzzleNumber(TrPuzzleClock.calendar());
+    if(puzzleNo==null)puzzleNo=todayNo;
+    if(puzzleNo<1||puzzleNo>todayNo)return;
+    const mode=puzzleNo===todayNo?'daily':'archive';
+    const date=new Date(Date.UTC(2026,7,1)+(puzzleNo-1)*864e5).toISOString().slice(0,10);
+    const saved=loadSaved(puzzleKey(puzzleNo)),options={date,mode};
+    if(saved&&!opts.fresh){if(saved.token)options.token=saved.token;else if(saved.guessed.length)options.legacyMoves=saved.guessed;}
+    remotePending=true;
+    try{
+      const session=await TrPuzzleRemote.open('tilkile',options);
+      if(request!==remoteRequest)return;
+      remoteSession=session;state.puzzleNo=puzzleNo;state.mode=mode;
+      restoreFrom(session.view);saveGame();
+    }catch(e){if(request===remoteRequest)flashMessage(e.message);}
+    finally{if(request===remoteRequest)remotePending=false;}
   }
 
   function restoreFrom(saved) {
@@ -199,7 +180,8 @@
     state.seed = saved.seed;
     render();
     if (state.status !== "playing") {
-      setTimeout(() => showEndModal(state.status === "won"), 300);
+      const openedPuzzle=state.puzzleNo;
+      setTimeout(() => { if(state.puzzleNo===openedPuzzle && state.status!=="playing") showEndModal(state.status === "won"); }, 300);
     }
   }
 
@@ -212,45 +194,20 @@
     return state.words.every(isWordSolved);
   }
 
-  function guess(letter) {
-    if (state.status !== "playing") return;
-    if (!ALPHABET.has(letter)) return;
-    if (state.guessed.has(letter)) {
-      if (state.absent.has(letter)) {
-        flashMessage("'" + letter + "' harfi zaten denendi.");
-      } else {
-        flashMessage("'" + letter + "' harfi zaten bulunuyor.");
-      }
-      return;
-    }
-
-    state.guessed.add(letter);
-    const present = state.words.some((w) => w.includes(letter));
-
-    if (present) {
-      render({ flip: letter });
-      if (allSolved()) {
-        state.status = "won";
-        finishGame(true);
-        return;
-      }
-      flashMessage("'" + letter + "' harfini buldun!");
-    } else {
-      state.absent.add(letter);
-      state.wrong += 1;
-      if (state.wrong >= MAX_WRONG) {
-        state.status = "lost";
-        render();
-        finishGame(false);
-        return;
-      }
-      // yeni kelime ekle (önceden denenmiş harfleri gri içerebilir)
-      const w = pickNextWord();
-      if (w) state.words.push(w);
-      render({ dropLast: !!w });
-      flashMessage("'" + letter + "' harfi bulunmuyor - yeni kelime eklendi.");
-    }
-    saveGame();
+  async function guess(letter){
+    if(remotePending||!remoteSession||state.status!=='playing'||!ALPHABET.has(letter))return;
+    if(state.guessed.has(letter)){flashMessage("'"+letter+"' harfi zaten denendi.");return;}
+    const request=remoteRequest,session=remoteSession,oldWrong=state.wrong;
+    remotePending=true;
+    try{
+      const v=await TrPuzzleRemote.move(session,letter);
+      if(request!==remoteRequest)return;
+      state.words=v.words;state.guessed=new Set(v.guessed);state.absent=new Set(v.absent);state.wrong=v.wrong;state.status=v.status;
+      render(v.wrong>oldWrong?{dropLast:!v.done}:{flip:letter});saveGame();
+      if(v.done){finishGame(v.win);return;}
+      flashMessage(v.wrong>oldWrong?"'"+letter+"' harfi bulunmuyor - yeni kelime eklendi.":"'"+letter+"' harfini buldun!");
+    }catch(e){if(request===remoteRequest)flashMessage(e.message);}
+    finally{if(request===remoteRequest)remotePending=false;}
   }
 
   // ---- Harf onayı (ilk ziyaret) ----
@@ -385,7 +342,7 @@
     const winPct = s.played ? Math.round((s.wins / s.played) * 100) : 0;
     // Her istatistik kendi kutucugunda; dort kutu tek satirda.
     const kutu = (deger, etiket) =>
-      `<div class="stat-box"><div class="stat-num">${deger}</div><div class="stat-cap">${etiket}</div></div>`;
+      `<div class="stat-box"><div class="stat-num">${TrPuzzleSecurity.escape(deger)}</div><div class="stat-cap">${etiket}</div></div>`;
     return (
       '<div class="stats-lines">' +
       '<div class="stats-mode">GENEL İSTATİSTİKLER</div>' +
@@ -494,7 +451,7 @@
     const text = (customText || buildShareText()) + "\n\n" + PAYLAS_ADRES;
     try {
       if (navigator.share) {
-        await navigator.share({ title: "Tilkile", text });
+        await navigator.share({ text });
         return;
       }
     } catch (e) {
@@ -603,9 +560,13 @@
     grid.innerHTML = html;
     grid.querySelectorAll(".archive-item").forEach((b) =>
       b.addEventListener("click", () => {
+        closeModal($("#end-modal"));
         startGame(parseInt(b.dataset.pno, 10));
         syncModeUI();
         closeModal($("#archive-modal"));
+        let hideHelp=false;
+        try { hideHelp=localStorage.getItem("foximax-hide-help")==="1"; } catch(e) {}
+        if(state.status==="playing" && !hideHelp) openHelp(true);
       })
     );
     openModal("#archive-modal");

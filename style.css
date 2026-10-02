@@ -695,3 +695,6 @@ body.kb-hidden .keyboard { display: none; }
 @media (min-width: 760px) {
   #help-modal .modal { max-width: 600px; }
 }
+
+#archive-modal { z-index:60; }
+#help-modal { z-index:70; }

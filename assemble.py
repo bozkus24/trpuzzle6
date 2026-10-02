@@ -44,6 +44,9 @@ def main():
     html = html.replace('<script src="words.js"></script>', f"<script>\n{words}\n</script>")
     html = html.replace('<script src="game.js"></script>', f"<script>\n{game}\n</script>")
 
+    remote = (ROOT / "assets/game-remote.js").read_text(encoding="utf-8")
+    html = html.replace('<script src="/assets/game-remote.js"></script>', f"<script>\n{remote}\n</script>")
+
     # tum PNG referanslarini data-URI ile degistir (src/href ve script ici tirnakli)
     for png in IMAGES:
         uri = datauri(png)

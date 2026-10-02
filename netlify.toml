@@ -1,0 +1,20 @@
+[build]
+  publish = "dist"
+  command = "python3 tools/build_publish.py"
+
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Central answer service; static files remain on this game site.
+[[redirects]]
+  from = "/api/game"
+  to = "https://trpuzzle.com/api/game"
+  status = 200
+  force = true
