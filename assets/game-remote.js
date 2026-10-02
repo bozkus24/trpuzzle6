@@ -23,3 +23,13 @@
     }
   });
 })(window);
+
+// Canonical /assets path is shared by the games on trpuzzle.com.
+(function () {
+  if (document.getElementById('tp-privacy-script')) return;
+  const script = document.createElement('script');
+  script.id = 'tp-privacy-script';
+  script.src = '/assets/privacy-controls.js';
+  script.defer = true;
+  document.head.append(script);
+})();
