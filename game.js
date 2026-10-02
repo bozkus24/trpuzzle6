@@ -545,7 +545,7 @@
     const todayNo = puzzleNumber(TrPuzzleClock.calendar());
     const grid = $("#archive-grid");
     let html = "";
-    for (let n = todayNo; n >= 1; n--) {
+    for (let n = todayNo; n >= puzzleNumber(new Date(2026, 9, 1)); n--) {
       const saved = loadSaved(puzzleKey(n));
       let cls = "archive-item";
       if (saved && saved.status === "won") cls += " solved";

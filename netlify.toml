@@ -18,3 +18,28 @@
   to = "https://trpuzzle.com/api/game"
   status = 200
   force = true
+
+# Shared information pages: keep standalone game sites on the canonical policies.
+[[redirects]]
+  from = "/hakkinda.html"
+  to = "https://trpuzzle.com/hakkinda.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/iletisim.html"
+  to = "https://trpuzzle.com/iletisim.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/gizlilik.html"
+  to = "https://trpuzzle.com/gizlilik.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/kosullar.html"
+  to = "https://trpuzzle.com/kosullar.html"
+  status = 302
+  force = true

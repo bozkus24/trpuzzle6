@@ -1331,7 +1331,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     <div class="modal">
       <button class="close-btn" data-close aria-label="Kapat">×</button>
       <h2>Arşiv</h2>
-      <p class="muted">Geçmiş günlük bulmacaları oyna (1 Ağustos 2026'dan bugüne).</p>
+      <p class="muted">Geçmiş günlük bulmacaları oyna (1 Ekim 2026'dan bugüne).</p>
       <div class="archive-grid" id="archive-grid"></div>
     </div>
   </div>
@@ -1945,7 +1945,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     const todayNo = puzzleNumber(TrPuzzleClock.calendar());
     const grid = $("#archive-grid");
     let html = "";
-    for (let n = todayNo; n >= 1; n--) {
+    for (let n = todayNo; n >= puzzleNumber(new Date(2026, 9, 1)); n--) {
       const saved = loadSaved(puzzleKey(n));
       let cls = "archive-item";
       if (saved && saved.status === "won") cls += " solved";
@@ -2094,8 +2094,10 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
 </section>
 
 <footer class="tp-footer">
-  Bir <a href="https://trpuzzle.com/">TrPuzzle</a> oyunu ·
-  <a href="https://trpuzzle.com/">Anasayfa</a> · <a href="https://trpuzzle.com/hakkinda.html">Hakkımızda</a> · <a href="https://trpuzzle.com/gizlilik.html">Gizlilik</a> · <a href="https://trpuzzle.com/kosullar.html">Koşullar</a>
+  Bir <a href="/">TrPuzzle</a> oyunu
+  <nav aria-label="Site bilgileri">
+    <a href="/">Anasayfa</a> · <a href="/hakkinda.html">Hakkımızda</a> · <a href="/iletisim.html">İletişim</a> · <a href="/gizlilik.html">Gizlilik ve Çerezler</a> · <a href="/kosullar.html">Kullanım Koşulları</a>
+  </nav>
 </footer>
 <style>
 /* ── TrPuzzle bilgi bölümü ve mini footer ── */
