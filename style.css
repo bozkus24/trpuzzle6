@@ -240,11 +240,10 @@ body {
 .tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
 .tile.solved-row .tile-face { background: var(--correct-dark); }
 /* harf açılırken yatay (rotateY) çevirme, yalnız iç yüz döner */
-.tile-face.flip { animation: flipReveal 0.7s ease; }
+.tile-face.flip { animation: flipReveal 0.18s ease; }
 @keyframes flipReveal {
   0%   { transform: rotateY(0deg);  }
-  45%  { transform: rotateY(90deg); }
-  55%  { transform: rotateY(90deg); }
+  50%  { transform: rotateY(90deg); }
   100% { transform: rotateY(0deg);  }
 }
 @media (prefers-reduced-motion: reduce) {
