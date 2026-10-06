@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<script defer id="tp-privacy-script" src="/assets/privacy-controls.js?v=consent-v1"></script>
+<meta name="google-adsense-account" content="ca-pub-7993571496408496">
+
 <script src="/assets/game-remote.js"></script>
 <!-- game-security-start -->
 <script>
@@ -156,7 +159,7 @@ html.tp-splash-acik{background:#fff}
 </script>
 <!-- game-clock-end -->
 <style>#tpPlay:not([data-progress-ready]){visibility:hidden}</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7993571496408496" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <div id="tp-splash">
@@ -755,7 +758,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     var ay=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
     var de=document.getElementById("tpDate");
     if(de) de.textContent=d.getDate()+" "+ay[d.getMonth()]+" "+d.getFullYear();
-    var LAUNCH=new Date(2026,7,1); /* 1 Ağustos 2026 = bulmaca #1 (game.js ile aynı) */
+    var LAUNCH=new Date(2026,9,1); /* 1 Ağustos 2026 = bulmaca #1 (game.js ile aynı) */
     function lm(x){return new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime();}
     var no=Math.floor((lm(d)-lm(LAUNCH))/86400000)+1;
     var ne=document.getElementById("tpNo");
@@ -901,7 +904,66 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     Baklava:['#endOverlay .modal'], Arala:['#statsModal .modal'],
     Tilkile:['#end-modal .modal','#stats-modal .modal'], Kesme:['#statsModal .sheet'], 'Bağla':['#perdeSonuc .modal','#perdeIst .modal']
   };
+  // Result panels keep sharing focused; next-puzzle countdowns are hidden.
+  const resultClockStyle=document.createElement('style');
+  resultClockStyle.textContent='#overlay .geri-sayim,#perde-sonuc .geri-sayim,#perde-istatistik .geri-sayim,#endOverlay #endCd,#end-modal #countdown{display:none!important}';
+  document.head.append(resultClockStyle);
+  // Keep the page anchored while any dialog is open, including stacked dialogs.
+  const dialogSelector='.perde,.modal-overlay,.overlay,#howto,#settings,.modal:has(> .sheet)';
+  let scrollLock=null, touchY=null;
+  function visibleDialogs(){
+    return Array.from(document.querySelectorAll(dialogSelector)).filter(el=>{
+      const css=getComputedStyle(el);
+      return el.getClientRects().length && css.display!=='none' && css.visibility!=='hidden';
+    });
+  }
+  function saveStyles(el,props){return props.map(p=>[p,el.style.getPropertyValue(p),el.style.getPropertyPriority(p)]);}
+  function restoreStyles(el,saved){saved.forEach(([p,v,priority])=>v?el.style.setProperty(p,v,priority):el.style.removeProperty(p));}
+  function syncDialogScroll(){
+    const open=visibleDialogs().length>0;
+    if(open&&!scrollLock){
+      const body=document.body,html=document.documentElement;
+      scrollLock={x:window.scrollX,y:window.scrollY,body:saveStyles(body,['position','top','left','width','overflow']),html:saveStyles(html,['overflow','scroll-behavior'])};
+      body.style.setProperty('position','fixed','important');
+      body.style.setProperty('top',-scrollLock.y+'px','important');
+      body.style.setProperty('left',-scrollLock.x+'px','important');
+      body.style.setProperty('width','100%','important');
+      body.style.setProperty('overflow','hidden','important');
+      html.style.setProperty('overflow','hidden','important');
+    }else if(!open&&scrollLock){
+      const saved=scrollLock;scrollLock=null;
+      restoreStyles(document.body,saved.body);
+      restoreStyles(document.documentElement,saved.html);
+      document.documentElement.style.setProperty('scroll-behavior','auto','important');
+      window.scrollTo(saved.x,saved.y);
+      const behavior=saved.html.filter(([p])=>p==='scroll-behavior');
+      restoreStyles(document.documentElement,behavior);
+    }
+  }
+  const scrollStyle=document.createElement('style');
+  scrollStyle.textContent=`${dialogSelector}{overscroll-behavior:contain} .perde>.kutu,.perde>.modal,.overlay>.modal,.modal-overlay>.modal,.modal-overlay>.modal-card,.modal>.sheet{overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}`;
+  document.head.append(scrollStyle);
+  document.addEventListener('touchstart',e=>{touchY=e.touches.length===1?e.touches[0].clientY:null;},{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!scrollLock||touchY===null||e.touches.length!==1)return;
+    const y=e.touches[0].clientY,delta=touchY-y;touchY=y;
+    if(!delta)return;
+    const dialogs=visibleDialogs();
+    let el=e.target instanceof Element?e.target:null;
+    if(el&&dialogs.some(d=>d.contains(el))){
+      while(el&&el!==document.body){
+        const css=getComputedStyle(el),max=el.scrollHeight-el.clientHeight;
+        if(/auto|scroll/.test(css.overflowY)&&max>1&&((delta>0&&el.scrollTop<max-1)||(delta<0&&el.scrollTop>1)))return;
+        el=el.parentElement;
+      }
+    }
+    if(e.cancelable)e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchend',()=>{touchY=null;},{passive:true});
+  document.addEventListener('touchcancel',()=>{touchY=null;},{passive:true});
+
   function refreshNext() {
+    syncDialogScroll();
     if(!window.TrPuzzleProgress) return;
     const progress=window.TrPuzzleProgress(new Date());
     const current=progress[game];
@@ -921,7 +983,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     });
   }
   let queued=false;
-  new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;refreshNext();});}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});
+  new MutationObserver(records=>{if(records.every(r=>r.type==='attributes'&&r.attributeName==='style'&&!r.target.matches(dialogSelector)))return;if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;refreshNext();});}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class','style']});
   refreshNext();
 })();
 

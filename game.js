@@ -10,6 +10,7 @@
   // ---- Sabitler ----
   const MAX_WRONG = 8;
   const WORD_LEN = 5;
+  // Display numbering starts October 1 (61 days after the legacy storage epoch). Keep stored IDs and streaks unchanged.
   const LAUNCH = new Date(2026, 7, 1); // 1 Ağustos 2026 = #1 günü
   const KEY_ROWS = [
     ["E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü"],
@@ -383,16 +384,16 @@
     // Bugünkü (günlük) sonuç
     let today = '<div class="today-result"><div class="stats-mode">BUGÜNKÜ SONUÇ</div>';
     if (daily && daily.status === "won") {
-      today += `<div class="today-line">Bulmaca #${pno} · <b class="win">Kazandın</b></div>`;
+      today += `<div class="today-line">Bulmaca #${pno - 61} · <b class="win">Kazandın</b></div>`;
       today += `<div class="today-sub muted">${daily.words.length} kelime · ${daily.wrong} yanlış</div>`;
     } else if (daily && daily.status === "lost") {
-      today += `<div class="today-line">Bulmaca #${pno} · <b class="lose">Kaybettin</b></div>`;
+      today += `<div class="today-line">Bulmaca #${pno - 61} · <b class="lose">Kaybettin</b></div>`;
       today += `<div class="today-sub muted">${daily.words.length} kelime açıldı</div>`;
     } else if (daily && daily.status === "playing") {
-      today += `<div class="today-line">Bulmaca #${pno} · Devam ediyor</div>`;
+      today += `<div class="today-line">Bulmaca #${pno - 61} · Devam ediyor</div>`;
       today += `<div class="today-sub muted">${daily.words.length} kelime · ${daily.wrong} yanlış</div>`;
     } else {
-      today += `<div class="today-line">Bulmaca #${pno}</div>`;
+      today += `<div class="today-line">Bulmaca #${pno - 61}</div>`;
       today += `<div class="today-sub muted">Bugün henüz oynamadın.</div>`;
     }
     today += "</div>";
@@ -404,7 +405,7 @@
     if (daily && daily.status !== "playing") {
       shareArea.innerHTML = '<button class="primary-btn" id="stats-share-btn">Sonucu Paylaş</button>';
       $("#stats-share-btn").onclick = () =>
-        share(buildShareTextFrom(`Tilkile #${pno}`, daily.status, daily.words.length, daily.wrong));
+        share(buildShareTextFrom(`Tilkile #${pno - 61}`, daily.status, daily.words.length, daily.wrong));
     } else {
       shareArea.innerHTML = "";
     }
@@ -442,7 +443,7 @@
     return `${title}\n${wordCount} kelime · ${wrong}/${MAX_WRONG} yanlış\n${bar}`;
   }
   function buildShareText() {
-    return buildShareTextFrom(`Tilkile #${state.puzzleNo}`, state.status, state.words.length, state.wrong);
+    return buildShareTextFrom(`Tilkile #${state.puzzleNo - 61}`, state.status, state.words.length, state.wrong);
   }
 
   const PAYLAS_ADRES = "https://trpuzzle.com/tilkile/";
@@ -554,7 +555,7 @@
       const d = dateForPuzzle(n);
       html +=
         `<button class="${cls}" data-pno="${n}">` +
-        `<span class="ar-no">#${n}</span>` +
+        `<span class="ar-no">#${n - 61}</span>` +
         `<span class="ar-date">${d.getDate()} ${TR_MONTHS[d.getMonth()].slice(0, 3)}</span></button>`;
     }
     grid.innerHTML = html;
