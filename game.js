@@ -201,12 +201,13 @@
     const request=remoteRequest,session=remoteSession,oldWrong=state.wrong;
     remotePending=true;
     try{
-      const v=await TrPuzzleRemote.move(session,letter);
+      const v=await TrPuzzleRemote.move(session,letter,document.querySelector('.key[data-letter="'+letter+'"]'));
       if(request!==remoteRequest)return;
       state.words=v.words;state.guessed=new Set(v.guessed);state.absent=new Set(v.absent);state.wrong=v.wrong;state.status=v.status;
-      render(v.wrong>oldWrong?{dropLast:!v.done}:{flip:letter});saveGame();
-      if(v.done){finishGame(v.win);return;}
+      const revealTime=render(v.wrong>oldWrong?{dropLast:!v.done}:{flip:letter});saveGame();
+      if(v.done){finishGame(v.win,revealTime);return;}
       flashMessage(v.wrong>oldWrong?"'"+letter+"' harfi bulunmuyor - yeni kelime eklendi.":"'"+letter+"' harfini buldun!");
+      if(revealTime)await new Promise(resolve=>setTimeout(resolve,revealTime));
     }catch(e){if(request===remoteRequest)flashMessage(e.message);}
     finally{if(request===remoteRequest)remotePending=false;}
   }
@@ -226,16 +227,17 @@
       return;
     }
     pendingLetter = letter;
+    TrPuzzleRemote.prepare(remoteSession,letter);
     $("#confirm-letter").textContent = letter;
     openModal("#confirm-modal");
   }
 
-  function finishGame(won) {
-    render();
+  function finishGame(won,revealTime=0) {
     saveGame();
     // Yalnızca bugünün günlük bulmacası istatistikleri/seriyi etkiler.
     if (state.mode === "daily") recordResult(won, state.words.length);
-    setTimeout(() => showEndModal(won), 650);
+    const request=remoteRequest;
+    setTimeout(() => {if(request===remoteRequest)showEndModal(won);}, Math.max(650,revealTime+200));
   }
 
   // ---- Render ----
@@ -244,6 +246,8 @@
   function render(opts) {
     opts = opts || {};
     const flip = opts.flip || null;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let revealCount=0;
 
     // canlar (kullanıcının kalp görseli; dolu = renkli, giden = soluk)
     const remaining = MAX_WRONG - state.wrong;
@@ -271,7 +275,10 @@
           const miss = state.absent.has(ch);
           cls += miss ? " miss" : " revealed";
           if (solved && !miss) cls += " solved-row";
-          if (flip && ch === flip && !miss) faceCls += " flip";
+          if (flip && ch === flip && !miss) {
+            faceCls += " flip";
+            face.style.animationDelay=(Math.min(revealCount++,4)*180)+'ms';
+          }
           face.textContent = ch;
         } else if (state.status === "lost") {
           cls += " answer";  // kaybedince cevabı kırmızıyla göster
@@ -286,6 +293,7 @@
     });
 
     renderKeyboard();
+    return reduced||!revealCount?0:Math.min(revealCount-1,4)*180+320;
   }
 
   function renderKeyboard() {
@@ -305,6 +313,8 @@
         }
         if (state.status !== "playing") btn.disabled = true;
         btn.addEventListener("click", () => confirmGuess(L));
+        btn.addEventListener('pointerenter',()=>{if(state.status==='playing'&&!state.guessed.has(L))TrPuzzleRemote.prepare(remoteSession,L);});
+        btn.addEventListener('pointerdown',()=>{if(state.status==='playing'&&!state.guessed.has(L))TrPuzzleRemote.prepare(remoteSession,L);});
         row.appendChild(btn);
       });
       kb.appendChild(row);
