@@ -9,8 +9,8 @@
 (function(root){
   'use strict';
   const messages={PUZZLE_UNAVAILABLE:'Bu günün bulmacası henüz açılmadı.',INVALID_MOVE:'Bu hamle geçerli değil.',GAME_FINISHED:'Bu oyun zaten tamamlandı.',INVALID_SESSION:'Oyun kaydı doğrulanamadı. Kaydın silinmedi; lütfen yeniden dene.'};
-  async function request(body){
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+  async function request(body,controller=new AbortController()){
+    const timer=setTimeout(()=>controller.abort(),15000);
     try{
       const response=await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',signal:controller.signal});
       if(response.status===429)throw new Error('Çok hızlı işlem yapıldı. Biraz bekleyip yeniden dene.');
@@ -19,14 +19,62 @@
     }catch(e){if(e.name==='AbortError'||e instanceof TypeError||e instanceof SyntaxError)throw new Error('Bağlantı kurulamadı. Tahminin kaybolmadı; yeniden dene.');throw e;}
     finally{clearTimeout(timer);}
   }
-  const pending=new WeakSet();
+  const pending=new WeakSet(),prepared=new WeakMap();
+  function discard(session){
+    const entry=prepared.get(session);if(!entry)return;
+    clearTimeout(entry.timer);entry.controller.abort();prepared.delete(session);
+  }
+  function start(entry){
+    clearTimeout(entry.timer);
+    if(!entry.promise){
+      entry.promise=request({action:'move',token:entry.token,move:entry.move},entry.controller);
+      entry.promise.catch(()=>{entry.failed=true;});
+    }
+    return entry.promise;
+  }
+  function candidate(session,move){
+    return {token:session.token,move,key:JSON.stringify(move),controller:new AbortController(),promise:null,failed:false};
+  }
+  // The API is stateless: a prepared result is adopted only on explicit submission.
+  function prepare(session,move){
+    if(!session||pending.has(session))return;
+    if(move==null){discard(session);return;}
+    const previous=prepared.get(session),key=JSON.stringify(move);
+    if(previous&&previous.token===session.token&&previous.key===key&&!previous.failed)return;
+    discard(session);
+    const entry=candidate(session,move);prepared.set(session,entry);
+    entry.timer=setTimeout(()=>start(entry),100);
+  }
+  let feedbackId=0;
+  function feedback(target){
+    const id=++feedbackId;
+    if(!document.getElementById('tp-move-style')){
+      const style=document.createElement('style');style.id='tp-move-style';
+      style.textContent='.tp-move-pending{animation:tp-move-wait .9s ease-in-out infinite!important}@keyframes tp-move-wait{0%,100%{opacity:1}50%{opacity:.65}}#tp-move-status{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:10000;padding:8px 14px;border-radius:20px;background:#262626;color:#fff;font:500 13px system-ui;pointer-events:none;box-shadow:0 2px 10px #0002}#tp-move-status[hidden]{display:none}@media(prefers-reduced-motion:reduce){.tp-move-pending{animation:none!important;outline:2px solid currentColor;outline-offset:3px}}';
+      document.head.append(style);
+    }
+    let status=document.getElementById('tp-move-status');
+    if(!status){status=document.createElement('div');status.id='tp-move-status';status.hidden=true;status.setAttribute('role','status');document.body.append(status);}
+    const oldBusy=target?.getAttribute('aria-busy');
+    target?.classList.add('tp-move-pending');target?.setAttribute('aria-busy','true');
+    const timer=setTimeout(()=>{if(id===feedbackId){status.textContent='Kontrol ediliyor…';status.hidden=false;}},180);
+    return ()=>{
+      clearTimeout(timer);if(id===feedbackId){status.hidden=true;status.textContent='';}target?.classList.remove('tp-move-pending');
+      if(target){if(oldBusy===null)target.removeAttribute('aria-busy');else target.setAttribute('aria-busy',oldBusy);}
+    };
+  }
   root.TrPuzzleRemote=Object.freeze({
+    prepare,
     async open(game,options={}){return request({action:options.token?'resume':'start',game,...options});},
-    async move(session,move){
+    async move(session,move,target){
       if(pending.has(session))throw new Error('Önceki hamle kontrol ediliyor.');
       pending.add(session);
-      try{const next=await request({action:'move',token:session.token,move});Object.assign(session,next);return next.view;}
-      finally{pending.delete(session);}
+      let entry=prepared.get(session);
+      if(!entry||entry.token!==session.token||entry.key!==JSON.stringify(move)||entry.failed){discard(session);entry=candidate(session,move);}
+      prepared.delete(session);
+      const stop=feedback(target);
+      try{const next=await start(entry);Object.assign(session,next);return next.view;}
+      finally{stop();pending.delete(session);}
     }
   });
 })(window);
@@ -326,10 +374,9 @@ body {
 .tile.answer .tile-face { background: var(--wrong); }  /* kaybedince açılan cevap */
 .tile.solved-row .tile-face { background: var(--correct-dark); }
 /* harf açılırken yatay (rotateY) çevirme, yalnız iç yüz döner */
-.tile-face.flip { animation: flipReveal 0.18s ease; }
+.tile-face.flip { animation: flipReveal .32s ease-out both; }
 @keyframes flipReveal {
-  0%   { transform: rotateY(0deg);  }
-  50%  { transform: rotateY(90deg); }
+  0%   { transform: rotateY(90deg); }
   100% { transform: rotateY(0deg);  }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1613,12 +1660,13 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     const request=remoteRequest,session=remoteSession,oldWrong=state.wrong;
     remotePending=true;
     try{
-      const v=await TrPuzzleRemote.move(session,letter);
+      const v=await TrPuzzleRemote.move(session,letter,document.querySelector('.key[data-letter="'+letter+'"]'));
       if(request!==remoteRequest)return;
       state.words=v.words;state.guessed=new Set(v.guessed);state.absent=new Set(v.absent);state.wrong=v.wrong;state.status=v.status;
-      render(v.wrong>oldWrong?{dropLast:!v.done}:{flip:letter});saveGame();
-      if(v.done){finishGame(v.win);return;}
+      const revealTime=render(v.wrong>oldWrong?{dropLast:!v.done}:{flip:letter});saveGame();
+      if(v.done){finishGame(v.win,revealTime);return;}
       flashMessage(v.wrong>oldWrong?"'"+letter+"' harfi bulunmuyor - yeni kelime eklendi.":"'"+letter+"' harfini buldun!");
+      if(revealTime)await new Promise(resolve=>setTimeout(resolve,revealTime));
     }catch(e){if(request===remoteRequest)flashMessage(e.message);}
     finally{if(request===remoteRequest)remotePending=false;}
   }
@@ -1638,16 +1686,17 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
       return;
     }
     pendingLetter = letter;
+    TrPuzzleRemote.prepare(remoteSession,letter);
     $("#confirm-letter").textContent = letter;
     openModal("#confirm-modal");
   }
 
-  function finishGame(won) {
-    render();
+  function finishGame(won,revealTime=0) {
     saveGame();
     // Yalnızca bugünün günlük bulmacası istatistikleri/seriyi etkiler.
     if (state.mode === "daily") recordResult(won, state.words.length);
-    setTimeout(() => showEndModal(won), 650);
+    const request=remoteRequest;
+    setTimeout(() => {if(request===remoteRequest)showEndModal(won);}, Math.max(650,revealTime+200));
   }
 
   // ---- Render ----
@@ -1656,6 +1705,8 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
   function render(opts) {
     opts = opts || {};
     const flip = opts.flip || null;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let revealCount=0;
 
     // canlar (kullanıcının kalp görseli; dolu = renkli, giden = soluk)
     const remaining = MAX_WRONG - state.wrong;
@@ -1683,7 +1734,10 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
           const miss = state.absent.has(ch);
           cls += miss ? " miss" : " revealed";
           if (solved && !miss) cls += " solved-row";
-          if (flip && ch === flip && !miss) faceCls += " flip";
+          if (flip && ch === flip && !miss) {
+            faceCls += " flip";
+            face.style.animationDelay=(Math.min(revealCount++,4)*180)+'ms';
+          }
           face.textContent = ch;
         } else if (state.status === "lost") {
           cls += " answer";  // kaybedince cevabı kırmızıyla göster
@@ -1698,6 +1752,7 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
     });
 
     renderKeyboard();
+    return reduced||!revealCount?0:Math.min(revealCount-1,4)*180+320;
   }
 
   function renderKeyboard() {
@@ -1717,6 +1772,8 @@ c0 -41 -6 -73 -15 -88 -19 -28 -100 -82 -139 -92 l-29 -7 7 -83 c8 -101 3
         }
         if (state.status !== "playing") btn.disabled = true;
         btn.addEventListener("click", () => confirmGuess(L));
+        btn.addEventListener('pointerenter',()=>{if(state.status==='playing'&&!state.guessed.has(L))TrPuzzleRemote.prepare(remoteSession,L);});
+        btn.addEventListener('pointerdown',()=>{if(state.status==='playing'&&!state.guessed.has(L))TrPuzzleRemote.prepare(remoteSession,L);});
         row.appendChild(btn);
       });
       kb.appendChild(row);
